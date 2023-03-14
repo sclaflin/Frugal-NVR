@@ -1,0 +1,4 @@
+{
+    "apiUrl": "http://localhost:3000",
+    "streamUrl": "http://localhost:8000"
+}

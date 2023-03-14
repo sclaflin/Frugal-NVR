@@ -1,0 +1,87 @@
+import EventEmitter from 'events';
+import API from './API';
+
+export default class Camera extends EventEmitter {
+	#name;
+	#videoPath;
+	#retainHours;
+	#api;
+	#thumb;
+	#segments;
+	#segmentsSize;
+	#events;
+	constructor(name, videoPath, retainHours) {
+		if(typeof name !== 'string')    
+			throw new TypeError('name must be a string.');
+		if(typeof videoPath !== 'string')
+			throw new TypeError('videoPath must be a string.');
+		if(!Number.isInteger(retainHours))
+			throw new TypeError('retainHours must be an integer.');
+
+		super();
+		
+		this.#name = name;
+		this.#videoPath = videoPath;
+		this.#retainHours = retainHours;
+	}
+	get name() {
+		return this.#name;
+	}
+	get nameSanitized() {
+		return this.name.replace(/[^a-zA-Z0-9]+/g, '_');
+	}
+	get videoPath() {
+		return this.#videoPath;
+	}
+	get retainHours() {
+		return this.#retainHours;
+	}
+	get api() {
+		return this.#api;
+	}
+	set api(v) {
+		if(!(v instanceof API))
+			throw new TypeError('api must be an API object.');
+		this.#api = v;
+	}
+	async updateThumb() {
+		this.#thumb = await this.api.getThumb(this);
+	}
+	get thumb() {
+		return this.#thumb;
+	}
+	async updateSegments() {
+		this.#segments = await this.api.getSegments(this);
+	}
+	get segments() {
+		return this.#segments;
+	}
+	async updateSegmentsSize() {
+		this.#segmentsSize = await this.api.getSegmentsSize(this);
+	}
+	get segmentsSize() {
+		return this.#segmentsSize;
+	}
+	async updateEvents() {
+		this.#events = await this.api.getMotion(this, this.segments.items?.[0].date);
+	}
+	get events() {
+		return this.#events;
+	}
+	toJSON() {
+		return {
+			name: this.name,
+			videoPath: this.videoPath,
+			retainHours: this.retainHours
+		};
+	}
+	static fromObject(config) {
+		if(config === null || typeof config !== 'object')
+			throw new TypeError('config must be an Object.');
+		return new this(
+			config.name,
+			config.videoPath,
+			config.retainHours
+		);
+	}
+}

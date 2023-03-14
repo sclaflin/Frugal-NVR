@@ -1,0 +1,11 @@
+import Iterable from './Iterable';
+import Segment from './Segment';
+
+export default class Segments extends Iterable {
+	add(...items) {
+		if(items.filter(item => !(item instanceof Segment)) > 0)
+			throw new TypeError('all arguments must be a Segment object.');
+			
+		super.add(...items);
+	}
+}
