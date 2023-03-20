@@ -10,6 +10,7 @@ RUN apt update \
         sudo \
         iputils-ping \
         procps \
+        git \
         ffmpeg \
     && rm -rf /var/lib/apt/lists/*
 
