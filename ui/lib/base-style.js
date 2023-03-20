@@ -57,6 +57,9 @@ export default css`
 	.padded-most {
 		padding: 1em;
 	}
+	.highlight {
+		background-color: rgba(255,255,255,0.5);
+	}
 	.clickable {
 		cursor: pointer;
 	}
