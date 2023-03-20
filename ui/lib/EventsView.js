@@ -20,13 +20,13 @@ export default class EventsView extends NeedsCamerasMixin(NeedsMixin(LitElement)
 	];
 	static properties = {
 		cameraIndex: { type: Number, attribute: 'camera-index' },
+		currentDate: { type: Number, attribute: 'current-date' },
 		eventCount: { type: Number, attribute: 'event-count' }
 	};
 
 	render() {
-
 		const events = this.cameras?.items[this.cameraIndex]?.events?.items.reverse().map((item) =>
-			html`<frugal-event start=${item.start} stop=${item.stop}></frugal-event>`
+			html`<frugal-event current-date=${this.currentDate} start=${item.start} stop=${item.stop}></frugal-event>`
 		);
 		return html`<div class="container">${events}</div>`;
 	}

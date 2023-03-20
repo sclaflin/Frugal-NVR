@@ -8,7 +8,8 @@ export default class EventView extends LitElement {
 	];
 	static properties = {
 		start: { type: Number, attribute: 'start' },
-		stop: { type: Number, attribute: 'stop' }
+		stop: { type: Number, attribute: 'stop' },
+		currentDate: { type: Number, attribute: 'current-date' }
 	};
 
 	handleClick() {
@@ -23,9 +24,10 @@ export default class EventView extends LitElement {
 		}));
 	}
 	render() {
+		const highlight = (this.currentDate >= this.start && this.currentDate <= this.stop);
 		return html`
 			<div
-				class="rounded padded dark-bg clickable"
+				class="rounded padded dark-bg clickable ${highlight ? 'highlight' : ''}"
 				@click=${() => this.handleClick()}
 			>${(new Date(this.start * 1000)).toLocaleString()} for ${Math.round(this.stop - this.start)} seconds.
 			</div>

@@ -14,7 +14,8 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 	#updateInterval;
 
 	static properties = {
-		cameraIndex: { type: Number, attribute: 'camera-index' }
+		cameraIndex: { type: Number, attribute: 'camera-index' },
+		currentDate: { type: Number, attribute: 'current-date' }
 	};
 	static styles = [
 		baseStyle,
@@ -118,7 +119,7 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 	async showClip(start, stop) {
 		if(!this.api)
 			return;
-		
+		this.currentDate = start;
 		// make sure segments view is updated with the clip start
 		this.shadowRoot.querySelector('frugal-segments').currentDate = start;
 		const objectURL = await this.api.getClip(this.cameras.items[this.cameraIndex], start, stop);
@@ -141,6 +142,7 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 						<frugal-events
 							camera-index=${this.cameraIndex}
 							event-count=${eventCount}
+							current-date=${this.currentDate}
 							@clip=${e => { const { start, stop } = e.detail; this.showClip(start, stop); }}
 						></frugal-events>
 					</div>
@@ -151,6 +153,7 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 				<frugal-segments
 					start-date=${start}
 					segment-count=${segmentCount}
+					@currentDate=${e => this.currentDate = e.detail.currentDate}
 					@clip=${e => { const { start, stop } = e.detail; this.showClip(start, stop); }}
 					@live=${() => this.play()}
 				></frugal-segments>

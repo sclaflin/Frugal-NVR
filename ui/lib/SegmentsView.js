@@ -97,6 +97,14 @@ export default class SegmentsView extends LitElement {
 		if(!slider.value || Number(slider.value) === Number(slider.getAttribute('max'))) {
 			// update to the current max value
 			this.currentDate = this.maxDate;
+			this.dispatchEvent(new CustomEvent('currentDate', {
+				bubbles: true,
+				composed: true,
+				detail: {
+					isLive: true,
+					currentDate: this.currentDate
+				}
+			}));
 		}
 	}
 	viewDate(value) {
@@ -108,6 +116,15 @@ export default class SegmentsView extends LitElement {
 			this.maxDate :
 			(value < this.startDate ? this.startDate : value);
 		
+		this.dispatchEvent(new CustomEvent('currentDate', {
+			bubbles: true,
+			composed: true,
+			detail: {
+				isLive: this.currentDate === this.maxDate,
+				currentDate: this.currentDate
+			}
+		}));
+
 		if(this.currentDate === this.maxDate) {
 			this.dispatchEvent(new CustomEvent('live', { 
 				bubbles: true,
@@ -129,7 +146,7 @@ export default class SegmentsView extends LitElement {
 	handleLiveButton() {
 		const slider = this.shadowRoot.querySelector('frugal-slider');
 		slider.value = this.maxDate;
-		this.dispatchEvent(new CustomEvent('live', { 
+		this.dispatchEvent(new CustomEvent('live', {
 			bubbles: true,
 			composed: true
 		}));
