@@ -57,6 +57,16 @@ export default class API {
 		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/clip/${start}/${stop}`);
 		return await URL.createObjectURL(await response.blob());
 	}
+	async getDownload(camera, start, stop) {
+		if(!(camera instanceof Camera))
+			throw new TypeError('camera must be a Camera object.');
+		if(!Number.isInteger(start))
+			throw new TypeError('start must be an integer.');
+		if(!Number.isInteger(stop))
+			throw new TypeError('stop must be an integer.');
+		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/download/${start}/${stop}`);
+		return await URL.createObjectURL(await response.blob());
+	}
 	async getMotion(camera, start) {
 		if(!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');

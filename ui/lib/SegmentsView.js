@@ -143,6 +143,16 @@ export default class SegmentsView extends LitElement {
 			}));
 		}
 	}
+	download() {
+		this.dispatchEvent(new CustomEvent('download', {
+			bubbles: true,
+			composed: true,
+			detail: {
+				start: this.currentDate,
+				stop: this.currentDate + this.clipDuration
+			}
+		}));
+	}
 	handleLiveButton() {
 		const slider = this.shadowRoot.querySelector('frugal-slider');
 		slider.value = this.maxDate;
@@ -164,6 +174,7 @@ export default class SegmentsView extends LitElement {
 						@change=${e => this.clipDuration = Number(e.target.value)}
 					/>
 				</div>
+				${!this.isLive ? html`<a class="download-button border rounded padded-more shadow clickable dark-bg" @click=${() => this.download()}>Download</a>` : ''}
 				<a class="live-button border rounded padded-more shadow clickable dark-bg" @click=${() => this.viewDate(this.maxDate)}>
 					${this.isLive ? 'Live' : 'Playback'} ${this.isLive ? html`<div class="pulse"></div>` : ''}
 				</a>

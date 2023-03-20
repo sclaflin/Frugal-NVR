@@ -125,6 +125,31 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 		const objectURL = await this.api.getClip(this.cameras.items[this.cameraIndex], start, stop);
 		this.play(objectURL);
 	}
+	async download(start, stop) {
+		if (!this.api)
+			return;
+		this.currentDate = start;
+
+		const objectURL = await this.api.getDownload(this.cameras.items[this.cameraIndex], start, stop);
+		const link = document.createElement('a');
+		link.href = objectURL;
+		const _date = new Date(start * 1000);
+		const date = `${_date.getFullYear()}${`0${_date.getMonth()+1}`.slice(-2)}${_date.getDate()}`;
+		const time = `${_date.getHours()}${_date.getMinutes()}${_date.getSeconds()}`;
+		link.download = `${this.cameras.items[this.cameraIndex].nameSanitized}_${date}_${time}.mp4`;
+		link.dispatchEvent(
+			new MouseEvent('click', {
+				bubbles: true,
+				cancelable: true,
+				view: window
+			})
+		);
+		setTimeout(() => {
+			// For Firefox it is necessary to delay revoking the ObjectURL
+			window.URL.revokeObjectURL(objectURL);
+			link.remove();
+		}, 100);
+	}
 	render() {
 		const camera = this.cameras?.items[this.cameraIndex];
 		const retainHours = camera?.retainHours || 0;
@@ -156,6 +181,7 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 					@currentDate=${e => this.currentDate = e.detail.currentDate}
 					@clip=${e => { const { start, stop } = e.detail; this.showClip(start, stop); }}
 					@live=${() => this.play()}
+					@download=${(e) => this.download(e.detail.start, e.detail.stop)}
 				></frugal-segments>
 			</fieldset>
 			<fieldset class="border rounded padded-most">
