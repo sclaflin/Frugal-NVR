@@ -111,7 +111,7 @@ export default class Slider extends LitElement {
 		}));
 	}
 	render() {
-		return html`<input min=${this.min} max=${this.max} .value=${this.value} @change="${e => this.handleChange(e)}" type="range" />`;
+		return html`<input min=${this.min} max=${this.max} .value=${this.value} @change=${e => this.handleChange(e)} type="range" />`;
 	}
 }
 customElements.define('frugal-slider', Slider);

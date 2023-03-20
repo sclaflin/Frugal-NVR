@@ -26,7 +26,7 @@ export default class EventView extends LitElement {
 		return html`
 			<div
 				class="rounded padded dark-bg clickable"
-				@click="${() => this.handleClick()}"
+				@click=${() => this.handleClick()}
 			>${(new Date(this.start * 1000)).toLocaleString()} for ${Math.round(this.stop - this.start)} seconds.
 			</div>
 		`;

@@ -139,9 +139,9 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 					<div class="events-label">${eventCount} Motion Events</div>
 					<div class="events-wrapper scrollable">
 						<frugal-events
-							camera-index="${this.cameraIndex}"
+							camera-index=${this.cameraIndex}
 							event-count=${eventCount}
-							@clip="${e => { const { start, stop } = e.detail; this.showClip(start, stop); }}"
+							@clip=${e => { const { start, stop } = e.detail; this.showClip(start, stop); }}
 						></frugal-events>
 					</div>
 				</div>
@@ -151,8 +151,8 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 				<frugal-segments
 					start-date=${start}
 					segment-count=${segmentCount}
-					@clip="${e => { const { start, stop } = e.detail; this.showClip(start, stop); }}"
-					@live="${() => this.play()}"
+					@clip=${e => { const { start, stop } = e.detail; this.showClip(start, stop); }}
+					@live=${() => this.play()}
 				></frugal-segments>
 			</fieldset>
 			<fieldset class="border rounded padded-most">

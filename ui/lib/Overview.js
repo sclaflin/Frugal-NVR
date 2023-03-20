@@ -100,7 +100,7 @@ export default class Overview extends NeedsCamerasMixin(NeedsAPIMixin(NeedsMixin
 			if(col === cols && row === 1) classes.push('rounded-top-right');
 			if(col === 1 && row === rows) classes.push('rounded-bottom-left');
 			if(col === cols && row === rows) classes.push('rounded-bottom-right');
-			return html`<img class="clickable ${classes.join(' ')}" @click="${() => this.thumbClickHandler(camera)}" src="${camera.thumb}"/>`;
+			return html`<img class="clickable ${classes.join(' ')}" @click=${() => this.thumbClickHandler(camera)} src=${camera.thumb}/>`;
 		});
 		
 		return html`

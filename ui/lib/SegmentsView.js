@@ -143,11 +143,11 @@ export default class SegmentsView extends LitElement {
 					<input 
 						type="number"
 						class="clip-duration border rounded"
-						value="${this.clipDuration}"
-						@change="${e => this.clipDuration = Number(e.target.value)}"
+						value=${this.clipDuration}
+						@change=${e => this.clipDuration = Number(e.target.value)}
 					/>
 				</div>
-				<a class="live-button border rounded padded-more shadow clickable dark-bg" @click="${() => this.viewDate(this.maxDate)}">
+				<a class="live-button border rounded padded-more shadow clickable dark-bg" @click=${() => this.viewDate(this.maxDate)}>
 					${this.isLive ? 'Live' : 'Playback'} ${this.isLive ? html`<div class="pulse"></div>` : ''}
 				</a>
 			</div>
@@ -156,19 +156,19 @@ export default class SegmentsView extends LitElement {
 					min=${this.startDate}
 					max=${this.maxDate}
 					value=${this.currentDate}
-					@input="${e => this.currentDate = Number(e.composedPath()[0].value)}"
-					@change="${e => this.viewDate(Number(e.target.value))}"
+					@input=${e => this.currentDate = Number(e.composedPath()[0].value)}
+					@change=${e => this.viewDate(Number(e.target.value))}
 				></frugal-slider>
 			</div>
 			<div class="bottom-row">
-				<a class="border rounded padded shadow clickable dark-bg" @click="${() => this.viewDate(this.currentDate - 86400)}">-1d</a>
-				<a class="border rounded padded shadow clickable dark-bg" @click="${() => this.viewDate(this.currentDate - 3600)}">-60m</a>
-				<a class="border rounded padded shadow clickable dark-bg" @click="${() => this.viewDate(this.currentDate - 300)}">-5m</a>
-				<a class="border rounded padded shadow clickable dark-bg" @click="${() => this.viewDate(this.currentDate - 60)}">-1m</a>
-				<a class="border rounded padded shadow clickable dark-bg" @click="${() => this.viewDate(this.currentDate + 60)}">+1m</a>
-				<a class="border rounded padded shadow clickable dark-bg" @click="${() => this.viewDate(this.currentDate + 300)}">+5m</a>
-				<a class="border rounded padded shadow clickable dark-bg" @click="${() => this.viewDate(this.currentDate + 3600)}">+60m</a>
-				<a class="border rounded padded shadow clickable dark-bg" @click="${() => this.viewDate(this.currentDate + 86400)}">+1d</a>
+				<a class="border rounded padded shadow clickable dark-bg" @click=${() => this.viewDate(this.currentDate - 86400)}>-1d</a>
+				<a class="border rounded padded shadow clickable dark-bg" @click=${() => this.viewDate(this.currentDate - 3600)}>-60m</a>
+				<a class="border rounded padded shadow clickable dark-bg" @click=${() => this.viewDate(this.currentDate - 300)}>-5m</a>
+				<a class="border rounded padded shadow clickable dark-bg" @click=${() => this.viewDate(this.currentDate - 60)}>-1m</a>
+				<a class="border rounded padded shadow clickable dark-bg" @click=${() => this.viewDate(this.currentDate + 60)}>+1m</a>
+				<a class="border rounded padded shadow clickable dark-bg" @click=${() => this.viewDate(this.currentDate + 300)}>+5m</a>
+				<a class="border rounded padded shadow clickable dark-bg" @click=${() => this.viewDate(this.currentDate + 3600)}>+60m</a>
+				<a class="border rounded padded shadow clickable dark-bg" @click=${() => this.viewDate(this.currentDate + 86400)}>+1d</a>
 			</div>
 		`;
 	}

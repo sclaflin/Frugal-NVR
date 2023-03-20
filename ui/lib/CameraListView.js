@@ -47,7 +47,7 @@ export default class CameraListView extends NeedsMixin(LitElement) {
 		return html`
 			<fieldset class="border rounded padded">
 				<legend>Cameras</legend>
-				${this.cameras?.items.map(camera => html`<a class="item rounded padded" @click="${e => this.clickHandler(e, camera)}">${camera.name}</a>`)}
+				${this.cameras?.items.map(camera => html`<a class="item rounded padded" @click=${e => this.clickHandler(e, camera)}>${camera.name}</a>`)}
 			</fieldset>
 		`;
 	}
