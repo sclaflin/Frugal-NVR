@@ -176,7 +176,7 @@ export default class SegmentsView extends LitElement {
 				</div>
 				${!this.isLive ? html`<a class="download-button border rounded padded-more shadow clickable dark-bg" @click=${() => this.download()}>Download</a>` : ''}
 				<a class="live-button border rounded padded-more shadow clickable dark-bg" @click=${() => this.viewDate(this.maxDate)}>
-					${this.isLive ? 'Live' : 'Playback'} ${this.isLive ? html`<div class="pulse"></div>` : ''}
+					Live ${this.isLive ? html`<div class="pulse"></div>` : ''}
 				</a>
 			</div>
 			<div class="padded-more">
