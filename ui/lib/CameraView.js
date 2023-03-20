@@ -163,7 +163,7 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 				<div class="stats">
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Disk</div>
-						<div class="value">${Math.round(segmentsSize / 1000 / 1000 / 1000 * 100)/100} GB</div>
+						<div class="value">${Math.round(segmentsSize / 1024 / 1024 / 1024 * 100)/100} GiB</div>
 					</div>
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Retention</div>
