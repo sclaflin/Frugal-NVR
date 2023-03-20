@@ -77,15 +77,15 @@ export default class FrugalNVR extends LitElement {
 		return this.#navRequest;
 	}
 	set navRequest(v) {
-		if(!(v instanceof NavRequest))
+		if (!(v instanceof NavRequest))
 			throw new TypeError('navRequest must be a NavRequest object.');
-		
+
 		this.#navRequest = v;
 		this.requestUpdate();
 	}
 	needsHandler(e) {
 		const { needs, target } = e.detail;
-		for(const need of needs) {
+		for (const need of needs) {
 			switch (need.type) {
 				case Config:
 					target[need.property] = this.config;
@@ -101,7 +101,7 @@ export default class FrugalNVR extends LitElement {
 	}
 	render() {
 		let view;
-		switch(this.navRequest.view) {
+		switch (this.navRequest.view) {
 			case VIEW_CAMERA:
 				view = html`<frugal-camera-view class="fade-in" camera-index=${this.cameras.items.indexOf(this.navRequest.data.camera)}></frugal-camera-view>`;
 				break;

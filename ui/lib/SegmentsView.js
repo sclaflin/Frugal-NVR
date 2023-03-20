@@ -12,7 +12,7 @@ export default class SegmentsView extends LitElement {
 		currentDate: { type: Number, attribute: 'current-date' },
 		clipDuration: { type: Number, attribute: 'clip-duration' }
 	};
-	
+
 	static styles = [
 		baseStyle,
 		css`
@@ -73,7 +73,7 @@ export default class SegmentsView extends LitElement {
 		return this.#maxDate;
 	}
 	set maxDate(v) {
-		if(!Number.isInteger(v))
+		if (!Number.isInteger(v))
 			throw new TypeError('maxDate must be an integer.');
 		this.#maxDate = v;
 	}
@@ -94,7 +94,7 @@ export default class SegmentsView extends LitElement {
 		const slider = this.shadowRoot.querySelector('frugal-slider');
 
 		// is the slider the current max value?
-		if(!slider.value || Number(slider.value) === Number(slider.getAttribute('max'))) {
+		if (!slider.value || Number(slider.value) === Number(slider.getAttribute('max'))) {
 			// update to the current max value
 			this.currentDate = this.maxDate;
 			this.dispatchEvent(new CustomEvent('currentDate', {
@@ -108,14 +108,14 @@ export default class SegmentsView extends LitElement {
 		}
 	}
 	viewDate(value) {
-		if(!Number.isInteger(value))
+		if (!Number.isInteger(value))
 			throw new TypeError('value must be an integer.');
-		
+
 		// clamp the requested date to the available range
 		this.currentDate = value > this.maxDate ?
 			this.maxDate :
 			(value < this.startDate ? this.startDate : value);
-		
+
 		this.dispatchEvent(new CustomEvent('currentDate', {
 			bubbles: true,
 			composed: true,
@@ -125,14 +125,14 @@ export default class SegmentsView extends LitElement {
 			}
 		}));
 
-		if(this.currentDate === this.maxDate) {
-			this.dispatchEvent(new CustomEvent('live', { 
+		if (this.currentDate === this.maxDate) {
+			this.dispatchEvent(new CustomEvent('live', {
 				bubbles: true,
 				composed: true
-			}));	
+			}));
 		}
 		else {
-			this.dispatchEvent(new CustomEvent('clip', { 
+			this.dispatchEvent(new CustomEvent('clip', {
 				bubbles: true,
 				composed: true,
 				detail: {

@@ -14,13 +14,13 @@ import Cameras from './Cameras';
 		const cameras = new Cameras();
 
 		cameras.add(...(await api.getCameras()).map(v => Camera.fromObject(v)));
-		for(const camera of cameras.items) {
+		for (const camera of cameras.items) {
 			camera.api = api;
 			await camera.updateSegments();
 			await camera.updateSegmentsSize();
 			await camera.updateEvents();
 		}
-		
+
 		// initialize
 		const frugalNvr = new FrugalNVR(config, api, cameras, useOverview);
 		document.body.appendChild(frugalNvr);

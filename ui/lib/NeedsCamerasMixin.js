@@ -17,5 +17,5 @@ export const NeedsCamerasMixin = superclass => class extends superclass {
 		this.#cameras = v;
 		this.gotCameras();
 	}
-	async gotCameras() {}
+	async gotCameras() { }
 };

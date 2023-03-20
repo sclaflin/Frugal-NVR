@@ -8,7 +8,7 @@ import Events from './Events';
 export default class API {
 	#url;
 	constructor(url) {
-		if(!(url instanceof URL))
+		if (!(url instanceof URL))
 			throw new TypeError('url must be a URL object.');
 		this.#url = url;
 	}
@@ -28,7 +28,7 @@ export default class API {
 		return await response.json();
 	}
 	async getSegments(camera) {
-		if(!(camera instanceof Camera))
+		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/segments`);
 		const segments = new Segments();
@@ -36,41 +36,41 @@ export default class API {
 		return segments;
 	}
 	async getSegmentsSize(camera) {
-		if(!(camera instanceof Camera))
+		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/segments/bytes`);
 		return await response.json();
 	}
 	async getThumb(camera) {
-		if(!(camera instanceof Camera))
+		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/thumb`);
 		return await URL.createObjectURL(await response.blob());
 	}
 	async getClip(camera, start, stop) {
-		if(!(camera instanceof Camera))
+		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
-		if(!Number.isInteger(start))
+		if (!Number.isInteger(start))
 			throw new TypeError('start must be an integer.');
-		if(!Number.isInteger(stop))
+		if (!Number.isInteger(stop))
 			throw new TypeError('stop must be an integer.');
 		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/clip/${start}/${stop}`);
 		return await URL.createObjectURL(await response.blob());
 	}
 	async getDownload(camera, start, stop) {
-		if(!(camera instanceof Camera))
+		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
-		if(!Number.isInteger(start))
+		if (!Number.isInteger(start))
 			throw new TypeError('start must be an integer.');
-		if(!Number.isInteger(stop))
+		if (!Number.isInteger(stop))
 			throw new TypeError('stop must be an integer.');
 		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/download/${start}/${stop}`);
 		return await URL.createObjectURL(await response.blob());
 	}
 	async getMotion(camera, start) {
-		if(!(camera instanceof Camera))
+		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
-		if(!Number.isInteger(start))
+		if (!Number.isInteger(start))
 			throw new TypeError('start must be an integer.');
 		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/motion/${start}`);
 		const events = new Events();

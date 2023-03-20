@@ -11,15 +11,15 @@ export default class Camera extends EventEmitter {
 	#segmentsSize;
 	#events;
 	constructor(name, videoPath, retainHours) {
-		if(typeof name !== 'string')    
+		if (typeof name !== 'string')
 			throw new TypeError('name must be a string.');
-		if(typeof videoPath !== 'string')
+		if (typeof videoPath !== 'string')
 			throw new TypeError('videoPath must be a string.');
-		if(!Number.isInteger(retainHours))
+		if (!Number.isInteger(retainHours))
 			throw new TypeError('retainHours must be an integer.');
 
 		super();
-		
+
 		this.#name = name;
 		this.#videoPath = videoPath;
 		this.#retainHours = retainHours;
@@ -40,7 +40,7 @@ export default class Camera extends EventEmitter {
 		return this.#api;
 	}
 	set api(v) {
-		if(!(v instanceof API))
+		if (!(v instanceof API))
 			throw new TypeError('api must be an API object.');
 		this.#api = v;
 	}
@@ -76,7 +76,7 @@ export default class Camera extends EventEmitter {
 		};
 	}
 	static fromObject(config) {
-		if(config === null || typeof config !== 'object')
+		if (config === null || typeof config !== 'object')
 			throw new TypeError('config must be an Object.');
 		return new this(
 			config.name,

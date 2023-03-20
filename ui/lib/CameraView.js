@@ -81,16 +81,16 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 	];
 	async updateCamera(camera) {
 		try {
-			if(!(camera instanceof Camera))
+			if (!(camera instanceof Camera))
 				throw new TypeError('camera must be a Camera object.');
-			
+
 			await camera.updateSegments();
 			await camera.updateSegmentsSize();
 			await camera.updateEvents();
 
 			this.requestUpdate();
 		}
-		catch(err) {
+		catch (err) {
 			console.error(err);
 		}
 	}
@@ -99,9 +99,9 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 		await this.play();
 	}
 	async play(objectURL) {
-		if(objectURL && typeof objectURL !== 'string')
+		if (objectURL && typeof objectURL !== 'string')
 			throw new TypeError('objectURL must be a string.');
-		if(!Mpegts.getFeatureList().mseLivePlayback || !this.config)
+		if (!Mpegts.getFeatureList().mseLivePlayback || !this.config)
 			return;
 		const camera = this.cameras.items[this.cameraIndex];
 		this.#player?.destroy();
@@ -117,7 +117,7 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 		await this.#player.play();
 	}
 	async showClip(start, stop) {
-		if(!this.api)
+		if (!this.api)
 			return;
 		this.currentDate = start;
 		// make sure segments view is updated with the clip start
@@ -157,7 +157,7 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 		const eventCount = camera?.events?.items.length || 0;
 		const segmentCount = camera?.segments?.items.length || 0;
 		const segmentsSize = camera?.segmentsSize || 0;
-		
+
 		return html`
 			<div class="video-parent">
 				<video class="border rounded shadow" controls muted></video>
@@ -189,7 +189,7 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 				<div class="stats">
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Disk</div>
-						<div class="value">${Math.round(segmentsSize / 1024 / 1024 / 1024 * 100)/100} GiB</div>
+						<div class="value">${Math.round(segmentsSize / 1024 / 1024 / 1024 * 100) / 100} GiB</div>
 					</div>
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Retention</div>
@@ -206,10 +206,10 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 	async attributeChangedCallback(...args) {
 		super.attributeChangedCallback(...args);
 
-		if(args[0] === 'camera-index' && this.cameras) {
+		if (args[0] === 'camera-index' && this.cameras) {
 			await this.updateCamera(this.cameras.items[this.cameraIndex]);
 			const segments = this.shadowRoot.querySelector('frugal-segments');
-			if(segments.maxDate === segments.currentDate)
+			if (segments.maxDate === segments.currentDate)
 				await this.play();
 			else await this.showClip(segments.currentDate, segments.currentDate + segments.clipDuration);
 		}
@@ -217,13 +217,13 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 	connectedCallback() {
 		super.connectedCallback();
 		this.#updateInterval = setInterval(async () => {
-			if(this.cameras)
-				await this.updateCamera(this.cameras.items[this.cameraIndex]);			
+			if (this.cameras)
+				await this.updateCamera(this.cameras.items[this.cameraIndex]);
 		}, 5000);
 	}
 	disconnectedCallback() {
 		super.disconnectedCallback();
-		if(this.#updateInterval) {
+		if (this.#updateInterval) {
 			clearTimeout(this.#updateInterval);
 			this.#updateInterval = null;
 		}

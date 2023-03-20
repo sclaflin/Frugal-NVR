@@ -4,9 +4,9 @@ export default class NavRequest {
 	#view;
 	#data;
 	constructor(view, data) {
-		if(VIEWS.indexOf(view) === -1)
+		if (VIEWS.indexOf(view) === -1)
 			throw new Error('Invalid view requested.');
-			
+
 		this.#view = view;
 		this.#data = data;
 	}

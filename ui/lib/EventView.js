@@ -13,7 +13,7 @@ export default class EventView extends LitElement {
 	};
 
 	handleClick() {
-		this.dispatchEvent(new CustomEvent('clip', { 
+		this.dispatchEvent(new CustomEvent('clip', {
 			bubbles: true,
 			composed: true,
 			detail: {

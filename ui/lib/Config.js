@@ -2,9 +2,9 @@ export default class Config {
 	#apiUrl;
 	#streamUrl;
 	constructor(apiUrl, streamUrl) {
-		if(!(apiUrl instanceof URL))
+		if (!(apiUrl instanceof URL))
 			throw new TypeError('apiUrl must be a URL object.');
-		if(!(streamUrl instanceof URL))
+		if (!(streamUrl instanceof URL))
 			throw new TypeError('streamUrl must be a URL object.');
 
 		this.#apiUrl = apiUrl;
@@ -17,7 +17,7 @@ export default class Config {
 		return this.#streamUrl;
 	}
 	static fromObject(config) {
-		if(config === null || typeof config !== 'object')
+		if (config === null || typeof config !== 'object')
 			throw new TypeError('config must be an Object.');
 
 		return new this(

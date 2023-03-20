@@ -10,31 +10,31 @@ export default class CPUStat {
 	#steal;
 	#system;
 	#user;
-	
+
 	constructor(cpu, guest, guest_nice, idle, iowait, irq, nice, softirq, steal, system, user) {
-		if(typeof cpu !== 'string')
+		if (typeof cpu !== 'string')
 			throw new TypeError('cpu must be a string.');
-		if(typeof guest !== 'string')
+		if (typeof guest !== 'string')
 			throw new TypeError('guest must be a string.');
-		if(typeof guest_nice !== 'string')
+		if (typeof guest_nice !== 'string')
 			throw new TypeError('guest_nice must be a string.');
-		if(typeof idle !== 'string')
+		if (typeof idle !== 'string')
 			throw new TypeError('idle must be a string.');
-		if(typeof iowait !== 'string')
+		if (typeof iowait !== 'string')
 			throw new TypeError('iowait must be a string.');
-		if(typeof irq !== 'string')
+		if (typeof irq !== 'string')
 			throw new TypeError('irq must be a string.');
-		if(typeof nice !== 'string')
+		if (typeof nice !== 'string')
 			throw new TypeError('nice must be a string.');
-		if(typeof softirq !== 'string')
+		if (typeof softirq !== 'string')
 			throw new TypeError('softirq must be a string.');
-		if(typeof steal !== 'string')
+		if (typeof steal !== 'string')
 			throw new TypeError('steal must be a string.');
-		if(typeof system !== 'string')
+		if (typeof system !== 'string')
 			throw new TypeError('system must be a string.');
-		if(typeof user !== 'string')
+		if (typeof user !== 'string')
 			throw new TypeError('user must be a string.');
-		
+
 		this.#cpu = cpu;
 		this.#guest = guest;
 		this.#guest_nice = guest_nice;
@@ -81,7 +81,7 @@ export default class CPUStat {
 		return this.#user;
 	}
 	static fromObject(obj) {
-		if(obj === null || typeof obj !== 'object')
+		if (obj === null || typeof obj !== 'object')
 			throw new TypeError('obj must be an object.');
 		return new this(
 			obj.cpu,

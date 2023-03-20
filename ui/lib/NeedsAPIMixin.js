@@ -17,5 +17,5 @@ export const NeedsAPIMixin = superclass => class extends superclass {
 		this.#api = v;
 		this.gotAPI();
 	}
-	async gotAPI() {}
+	async gotAPI() { }
 };

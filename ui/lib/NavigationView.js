@@ -15,7 +15,7 @@ export default class NavigationView extends LitElement {
 	];
 
 	handler(e, view) {
-		this.dispatchEvent(new CustomEvent('nav', { 
+		this.dispatchEvent(new CustomEvent('nav', {
 			bubbles: true,
 			composed: true,
 			detail: new NavRequest(view, e.detail)

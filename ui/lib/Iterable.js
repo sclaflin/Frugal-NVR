@@ -12,7 +12,7 @@ export default class Iterable extends EventEmitter {
 	}
 	remove(...items) {
 		const removed = [];
-		for(const item of items)
+		for (const item of items)
 			removed.push(this.#items.splice(this.#items.indexOf(item), 1));
 		this.emit('remove', ...items);
 		this.emit('change');
@@ -43,7 +43,7 @@ export default class Iterable extends EventEmitter {
 		};
 	}
 	static fromArgs(...args) {
-		const iterable  = new this();
+		const iterable = new this();
 		iterable.add(...args);
 		return iterable;
 	}

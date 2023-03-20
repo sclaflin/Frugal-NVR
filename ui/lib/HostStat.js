@@ -7,11 +7,11 @@ export default class HostStat {
 	#procs;
 	#mem;
 	constructor(cpus, procs, mem) {
-		if(!(cpus instanceof CPUStats))
+		if (!(cpus instanceof CPUStats))
 			throw new TypeError('cpus must be a CPUStats object.');
-		if(!(procs instanceof ProcessStats))
+		if (!(procs instanceof ProcessStats))
 			throw new TypeError('procs must be a ProcessStats object.');
-		if(!(mem instanceof MemStat))
+		if (!(mem instanceof MemStat))
 			throw new TypeError('mem must be a MemStat object.');
 
 		this.#cpus = cpus;
@@ -28,7 +28,7 @@ export default class HostStat {
 		return this.#mem;
 	}
 	static fromObject(config) {
-		if(config === null || typeof config !== 'object')
+		if (config === null || typeof config !== 'object')
 			throw new TypeError('config must be an Object.');
 
 		return new this(
