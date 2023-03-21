@@ -7,11 +7,12 @@ RUN apt update \
     && apt upgrade -y \
     && DEBIAN_FRONTEND="noninteractive" \
         apt install -y \
-        sudo \
         iputils-ping \
         procps \
-        git \
         ffmpeg \
+        mediainfo \
+        sudo \
+        git \
     && rm -rf /var/lib/apt/lists/*
 
 # Allow node user to sudo

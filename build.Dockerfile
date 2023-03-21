@@ -25,6 +25,7 @@ RUN apt update \
         ffmpeg \
         iputils-ping \
         procps \
+        mediainfo \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /app && chown node:node /app
