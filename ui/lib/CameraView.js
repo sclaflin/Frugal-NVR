@@ -120,7 +120,9 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 			return;
 		this.currentDate = start;
 		// make sure segments view is updated with the clip start
-		this.shadowRoot.querySelector('frugal-segments').currentDate = start;
+		const segments = this.shadowRoot.querySelector('frugal-segments');
+		segments.currentDate = start;
+		segments.clipDuration = stop - start;
 		const objectURL = await this.api.getClip(this.cameras.items[this.cameraIndex], start, stop);
 		this.play(objectURL);
 	}
