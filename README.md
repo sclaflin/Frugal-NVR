@@ -59,11 +59,6 @@ getting it up and running.
         # OPTIONAL: Default is 540. Sets the width of the thumbnail images
         # generated for the overview. Smaller is faster, bigger is prettier. :)
         thumbnailWidth: 540
-        # OPTIONAL: Default is "/dev/shm". Still images are captured from the
-        # camera streams to create the composite view. "/dev/shm" is a ram disk
-        # that can be used to avoid unnecessary wear and tear of a physical
-        # device.
-        stillsPath: /dev/shm
   # The media server provides RTMP live streams of the cameras being monitored.
   mediaServer:
     http:
@@ -94,6 +89,11 @@ getting it up and running.
     container_name: frugal-nvr
     restart: unless-stopped
     image: sclaflin/frugal-nvr:latest
+    # Sets the size of /dev/shm. Frugal tends to have a lot of read/write
+    # operations of temporary files. The shared memory disk is used to save wear
+    # and tear on drives. Set this to a value large enough to accommodate the
+    # largest video clips you think you may need. A good start is 500mb.
+    shm_size: 500mb
     # Set this to your local time zone. Please note that this is important
     # to keep the WebUI working properly.
     environment:
