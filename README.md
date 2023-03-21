@@ -56,6 +56,9 @@ getting it up and running.
         # OPTIONAL: Default is "true". Enables the overview,  Set to false to
         # save host memory and CPU.
         enable: true
+        # OPTIONAL: Default is 540. Sets the width of the thumbnail images
+        # generated for the overview. Smaller is faster, bigger is prettier. :)
+        thumbnailWidth: 540
         # OPTIONAL: Default is "/dev/shm". Still images are captured from the
         # camera streams to create the composite view. "/dev/shm" is a ram disk
         # that can be used to avoid unnecessary wear and tear of a physical
