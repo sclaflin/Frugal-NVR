@@ -22,7 +22,7 @@ export default class FrugalNVR extends LitElement {
 		baseStyle,
 		css`
 			.main {
-				max-width: 1080px;
+				max-width: 1440px;
 				margin: auto;
 				padding: 1em;
 			}
