@@ -1,13 +1,16 @@
 export default class Segment {
 	#path;
 	#date;
+	#bytes;
 	#duration;
 	#truncated;
-	constructor(path, date, duration, truncated) {
+	constructor(path, date, bytes, duration, truncated) {
 		if (typeof path !== 'string')
 			throw new TypeError('path must be a string.');
 		if (!Number.isInteger(date))
 			throw new TypeError('date must be an integer.');
+		if (!Number.isInteger(bytes))
+			throw new TypeError('bytes must be an integer.');
 		if (!Number.isInteger(duration))
 			throw new TypeError('duration must be an integer.');
 		if (typeof truncated !== 'boolean')
@@ -15,6 +18,7 @@ export default class Segment {
 
 		this.#path = path;
 		this.#date = date;
+		this.#bytes = bytes;
 		this.#duration = duration;
 		this.#truncated = truncated;
 	}
@@ -23,6 +27,9 @@ export default class Segment {
 	}
 	get date() {
 		return this.#date;
+	}
+	get bytes() {
+		return this.#bytes;
 	}
 	get duration() {
 		return this.#duration;
@@ -37,6 +44,7 @@ export default class Segment {
 		return new this(
 			config.path,
 			config.date,
+			config.bytes,
 			config.duration,
 			config.truncated
 		);

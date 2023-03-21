@@ -35,12 +35,6 @@ export default class API {
 		segments.add(...(await response.json()).map(v => Segment.fromObject(v)));
 		return segments;
 	}
-	async getSegmentsSize(camera) {
-		if (!(camera instanceof Camera))
-			throw new TypeError('camera must be a Camera object.');
-		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/segments/bytes`);
-		return await response.json();
-	}
 	async getThumb(camera) {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');

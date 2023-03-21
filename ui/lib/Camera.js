@@ -8,7 +8,6 @@ export default class Camera extends EventEmitter {
 	#api;
 	#thumb;
 	#segments;
-	#segmentsSize;
 	#events;
 	constructor(name, videoPath, retainHours) {
 		if (typeof name !== 'string')
@@ -55,12 +54,6 @@ export default class Camera extends EventEmitter {
 	}
 	get segments() {
 		return this.#segments;
-	}
-	async updateSegmentsSize() {
-		this.#segmentsSize = await this.api.getSegmentsSize(this);
-	}
-	get segmentsSize() {
-		return this.#segmentsSize;
 	}
 	async updateEvents() {
 		this.#events = await this.api.getMotion(this, this.segments.items?.[0].date);

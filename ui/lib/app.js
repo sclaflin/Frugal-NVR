@@ -17,7 +17,6 @@ import Cameras from './Cameras';
 		for (const camera of cameras.items) {
 			camera.api = api;
 			await camera.updateSegments();
-			await camera.updateSegmentsSize();
 			await camera.updateEvents();
 		}
 

@@ -85,7 +85,6 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 				throw new TypeError('camera must be a Camera object.');
 
 			await camera.updateSegments();
-			await camera.updateSegmentsSize();
 			await camera.updateEvents();
 
 			this.requestUpdate();
@@ -156,7 +155,7 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 		const start = camera?.segments?.items[0]?.date || Math.round(Date.now() / 1000);
 		const eventCount = camera?.events?.items.length || 0;
 		const segmentCount = camera?.segments?.items.length || 0;
-		const segmentsSize = camera?.segmentsSize || 0;
+		const segmentsSize = camera?.segments?.bytes || 0;
 
 		// calculate the total time recorded
 		const segmentsTime = new Date(0);
