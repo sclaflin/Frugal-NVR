@@ -8,4 +8,7 @@ export default class Segments extends Iterable {
 			
 		super.add(...items);
 	}
+	get duration() {
+		return this.items.reduce((p, c) => p + c.duration, 0);
+	}
 }

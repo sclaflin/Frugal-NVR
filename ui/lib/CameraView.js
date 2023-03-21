@@ -158,6 +158,14 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 		const segmentCount = camera?.segments?.items.length || 0;
 		const segmentsSize = camera?.segmentsSize || 0;
 
+		// calculate the total time recorded
+		const segmentsTime = new Date(0);
+		const now = Math.round(Date.now() / 1000);
+		const lastSegment = camera?.segments?.items.slice(-1)[0];
+		const accruedSegmentTime = now - (lastSegment?.truncated ? lastSegment.date : now);
+		segmentsTime.setSeconds((camera?.segments?.duration || 0) + accruedSegmentTime);
+		const segmentsDuration = segmentsTime.toISOString().substring(11, 19);
+
 		return html`
 			<div class="video-parent">
 				<video class="border rounded shadow" controls muted></video>
@@ -190,6 +198,10 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Disk</div>
 						<div class="value">${Math.round(segmentsSize / 1024 / 1024 / 1024 * 100) / 100} GiB</div>
+					</div>
+					<div class="badge border rounded shadow dark-bg">
+						<div class="header">Time</div>
+						<div class="value">${segmentsDuration}</div>
 					</div>
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Retention</div>
