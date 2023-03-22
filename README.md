@@ -1,6 +1,13 @@
 # Frugal NVR #
 
-Frugal NVR is a locally hosted Network Video Recorder with a focus on low CPU usage.
+Frugal NVR is a locally hosted Network Video Recorder with a focus on low
+resource usage.
+
+![Real time statistics](/images/stats.png)
+
+![Composite overview](/images/overview.png)
+
+![Camera view](/images/camera.png)
 
 ***Please note: This project is in a very early stage of development. The API is
 currently very unstable and not suitable for anyone that's not into tinkering as
@@ -11,9 +18,13 @@ things evolve.***
 * IP camera based motion detection
 * Continuous recording of camera streams
 * Configurable video retention time
-* Logging of ONVIF camera events
-* HTTP stream output
+* Logging of ONVIF camera motion events
+* HTTP live stream of monitored cameras
+* Tuned for low CPU usage
 * Web-based UI
+  * Real-time statistics
+  * Composite overview
+  * Live camera feed
 
 ## Requirements ##
 
@@ -21,14 +32,24 @@ things evolve.***
     * support ONVIF
     * provide H264 video streams
 
+## Roadmap ##
+
+* Multiple build targets
+* Tighter integration with ONVIF (PTZ & more)
+* Hardware accelleration
+* MQTT integration
+* Home Assistant integration
+
 ## Installation ##
 
 ### Docker & Docker Compose
 
-Below are install instructions based on using docker & docker-compse. If your docker environment varies, the below information is still useful for
-getting it up and running.
+Below are install instructions based on using docker & docker-compse. If your
+docker environment varies, the below information is still useful for getting
+it up and running.
 
-0. Install [docker](https://docs.docker.com/engine/install/) & [docker-compose](https://docs.docker.com/compose/install/)
+0. Install [docker](https://docs.docker.com/engine/install/) &
+  [docker-compose](https://docs.docker.com/compose/install/)
 1. Create a `FrugalNVR` folder on your docker host.
 2. Add a `video` and `data` sub-folder to the `FrugalNVR` folder.
 2. Add a `config.yml` to the `FrugalNVR` folder. Example configuration:
@@ -101,11 +122,13 @@ getting it up and running.
     # Expose the WebUI & Media Server ports
     ports:
       - 8000:8000
-      - 3001:3001
+      - 3000:3000
 
     volumes:
+      # Mount your hosts storage locations for video & data
       - ./videos:/app/videos
       - ./data:/app/data
+      # Mount your config file to make it do the things (and stuff).
       - ./config.yml:/app/config.yml
   ```
 4. Bring up the container with `docker-compose up -d`
