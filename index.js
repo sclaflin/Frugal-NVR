@@ -1,3 +1,4 @@
+import process from 'node:process';
 import fs from 'fs/promises';
 import { parse } from 'yaml';
 import * as constants from './lib/constants.js';
@@ -20,3 +21,7 @@ catch (err) {
 
 // fire it up!
 await nvr.start();
+
+// attempt to exit cleanly
+process.once('SIGTERM', async () => await nvr.stop());
+process.once('SIGINT', async () => await nvr.stop());
