@@ -19,7 +19,7 @@ try {
 		streamUrl: `http://${config.hostname}:${config.mediaServer.http.port}`
 	}));
 }
-catch(err) {
+catch (err) {
 	console.error(err);
 }
 

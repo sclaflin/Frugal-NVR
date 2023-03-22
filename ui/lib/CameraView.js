@@ -135,7 +135,7 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 		const link = document.createElement('a');
 		link.href = objectURL;
 		const _date = new Date(start * 1000);
-		const date = `${_date.getFullYear()}${`0${_date.getMonth()+1}`.slice(-2)}${_date.getDate()}`;
+		const date = `${_date.getFullYear()}${`0${_date.getMonth() + 1}`.slice(-2)}${_date.getDate()}`;
 		const time = `${_date.getHours()}${_date.getMinutes()}${_date.getSeconds()}`;
 		link.download = `${this.cameras.items[this.cameraIndex].nameSanitized}_${date}_${time}.mp4`;
 		link.dispatchEvent(
