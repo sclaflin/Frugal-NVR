@@ -59,7 +59,7 @@ getting it up and running.
         # OPTIONAL: Default is 540. Sets the width of the thumbnail images
         # generated for the overview. Smaller is faster, bigger is prettier. :)
         thumbnailWidth: 540
-  # The media server provides RTMP live streams of the cameras being monitored.
+  # The media server provides FLV live streams of the cameras being monitored.
   mediaServer:
     http:
       # REQUIRED: Default is "8000".
