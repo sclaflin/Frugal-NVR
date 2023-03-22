@@ -1,11 +1,15 @@
 import Config from './Config';
 import API from './API';
 import Camera from './Camera';
+import LoadingView from './LoadingView';
 import FrugalNVR from './FrugalNVR';
 import Cameras from './Cameras';
 
 (async () => {
 	try {
+		const loading = new LoadingView();
+		document.body.appendChild(loading);
+
 		// collect required dependencies
 		const response = await fetch('./config.json', { mode: 'no-cors' });
 		const config = Config.fromObject(await response.json());
@@ -24,6 +28,7 @@ import Cameras from './Cameras';
 		));
 
 		// initialize
+		loading.remove();
 		const frugalNvr = new FrugalNVR(config, api, cameras, useOverview);
 		document.body.appendChild(frugalNvr);
 	}
