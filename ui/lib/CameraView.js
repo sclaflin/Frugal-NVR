@@ -69,7 +69,7 @@ export default class CameraView extends LitElement {
 			.video-overlay:active .events-wrapper {
 				opacity: 1;
 			}
-			.stats {
+			.storage {
 				display: flex;
 				flex-wrap: wrap;
 				flex-direction: row;
@@ -77,7 +77,7 @@ export default class CameraView extends LitElement {
 				justify-content: center;
 				gap: 1em;
 			}
-			.stats > div {
+			.storage > div {
 				text-align: center;
 			}
 		`
@@ -221,8 +221,8 @@ export default class CameraView extends LitElement {
 				></frugal-segments>
 			</fieldset>
 			<fieldset class="border rounded padded-most">
-				<legend>Stats</legend>
-				<div class="stats">
+				<legend>Storage</legend>
+				<div class="storage">
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Disk</div>
 						<div class="value">${Math.round(segmentsSize / 1024 / 1024 / 1024 * 100) / 100} GiB</div>
