@@ -142,7 +142,7 @@ export default class StatsView extends LitElement {
 					</div>
 				</fieldset>
 				<fieldset class="border rounded padded-most">
-					<legend>Capture</legend>
+					<legend>Storage</legend>
 					<div class="stats">
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Cameras</div>
