@@ -7,6 +7,9 @@ import API from './API';
 import './SegmentsView';
 import './EventsView';
 
+// Turn off the noise. ;)
+Mpegts.LoggingControl.enableVerbose = false;
+
 export default class CameraView extends LitElement {
 	#config;
 	#api;
