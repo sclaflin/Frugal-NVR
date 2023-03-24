@@ -91,6 +91,7 @@ export default class SegmentsView extends LitElement {
 		if(v && !(v instanceof Segments))
 			throw new TypeError('segments must be a Segments object.');
 		this.#segments = v;
+		this.requestUpdate();
 	}
 	get events() {
 		return this.#events;
@@ -99,6 +100,7 @@ export default class SegmentsView extends LitElement {
 		if(v && !(v instanceof Events))
 			throw new TypeError('events must be an Events object.');
 		this.#events = v;
+		this.requestUpdate();
 	}
 	connectedCallback() {
 		super.connectedCallback();
