@@ -228,7 +228,7 @@ export default class CameraView extends LitElement {
 						<div class="value">${Math.round(segmentsSize / 1024 / 1024 / 1024 * 100) / 100} GiB</div>
 					</div>
 					<div class="badge border rounded shadow dark-bg">
-						<div class="header">Time</div>
+						<div class="header">Duration</div>
 						<div class="value">${segmentsDuration}</div>
 					</div>
 					<div class="badge border rounded shadow dark-bg">
