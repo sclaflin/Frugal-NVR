@@ -1,12 +1,15 @@
 import { LitElement, html, css } from 'lit';
 import baseStyle from './base-style';
 import Segments from './Segments';
+import Events from './Events';
 import './Slider';
+import './TimelineView';
 
 export default class SegmentsView extends LitElement {
 	#maxDateInterval = null;
 	#maxDate = Math.floor(Date.now() / 1000);
 	#segments;
+	#events;
 
 	static properties = {
 		startDate: { type: Number, attribute: 'start-date' },
@@ -38,8 +41,8 @@ export default class SegmentsView extends LitElement {
 			input {
 				width: 3em;
 			}
-			.live-button {
-				
+			frugal-timeline {
+				margin: 0 0.5em;
 			}
 			.pulse {
 				display: inline-block;
@@ -88,6 +91,14 @@ export default class SegmentsView extends LitElement {
 		if(v && !(v instanceof Segments))
 			throw new TypeError('segments must be a Segments object.');
 		this.#segments = v;
+	}
+	get events() {
+		return this.#events;
+	}
+	set events(v) {
+		if(v && !(v instanceof Events))
+			throw new TypeError('events must be an Events object.');
+		this.#events = v;
 	}
 	connectedCallback() {
 		super.connectedCallback();
@@ -188,7 +199,7 @@ export default class SegmentsView extends LitElement {
 					Live ${this.isLive ? html`<div class="pulse"></div>` : ''}
 				</a>
 			</div>
-			<div class="padded-more">
+			<div class="timeline padded-more">
 				<frugal-slider
 					min=${this.startDate}
 					max=${this.maxDate}
@@ -196,6 +207,10 @@ export default class SegmentsView extends LitElement {
 					@input=${e => this.currentDate = Number(e.composedPath()[0].value)}
 					@change=${e => this.viewDate(Number(e.target.value))}
 				></frugal-slider>
+				<frugal-timeline
+					.segments=${this.segments}
+					.events=${this.events}
+				></frugal-timeline>
 			</div>
 			<div class="bottom-row">
 				<a class="border rounded padded shadow clickable dark-bg" @click=${() => this.viewDate(this.currentDate - 86400)}>-1d</a>
