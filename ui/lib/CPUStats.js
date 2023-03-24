@@ -1,4 +1,4 @@
-import Iterable from './Iterable';
+import Iterable from '../../lib/Iterable';
 import CPUStat from './CPUStat';
 
 export default class CPUStats extends Iterable {

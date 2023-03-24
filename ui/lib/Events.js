@@ -1,4 +1,4 @@
-import Iterable from './Iterable';
+import Iterable from '../../lib/Iterable';
 import Event from './Event';
 
 export default class Events extends Iterable {

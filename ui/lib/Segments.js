@@ -1,4 +1,4 @@
-import Iterable from './Iterable';
+import Iterable from '../../lib/Iterable';
 import Segment from './Segment';
 
 export default class Segments extends Iterable {

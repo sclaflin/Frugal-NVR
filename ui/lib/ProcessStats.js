@@ -1,4 +1,4 @@
-import Iterable from './Iterable';
+import Iterable from '../../lib/Iterable';
 import ProcessStat from './ProcessStat';
 
 export default class ProcessStats extends Iterable {

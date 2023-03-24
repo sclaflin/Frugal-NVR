@@ -1,4 +1,4 @@
-import Iterable from './Iterable';
+import Iterable from '../../lib/Iterable';
 import Camera from './Camera';
 
 export default class Cameras extends Iterable {
