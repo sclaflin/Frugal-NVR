@@ -70,7 +70,6 @@ export default class TimelineView extends LitElement {
 		const stop = Math.round(Date.now() / 1000);
 		const timeSpan = stop - start;
 		const widthPerSecond = canvas.width / timeSpan;
-		const colors = ['ffffff', 'cccccc'];
 		const ctx = canvas.getContext('2d');
 		ctx.clearRect(0, 0, canvas.width, canvas.height);
 		for (const segment of segments) {
@@ -79,8 +78,7 @@ export default class TimelineView extends LitElement {
 				stop * widthPerSecond :
 				((segment.date + segment.duration - start) * widthPerSecond) - x1;
 		
-			ctx.fillStyle = `#${colors[segments.indexOf(segment) % colors.length]}`;
-		
+			ctx.fillStyle = '#ffffff';
 			ctx.fillRect(x1, 0, x2, canvas.height);
 		}
 		if(!events) return;
@@ -90,8 +88,7 @@ export default class TimelineView extends LitElement {
 				stop * widthPerSecond :
 				((event.stop - start) * widthPerSecond) - x1;
 		
-			ctx.fillStyle = '#FFA500';
-		
+			ctx.fillStyle = '#ff0000';
 			ctx.fillRect(x1, 0, x2, canvas.height);
 		}
 	}
