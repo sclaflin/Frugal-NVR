@@ -4,6 +4,7 @@ FROM node:lts-slim
 COPY package-lock.json /build/
 COPY package.json /build/
 COPY .parcelrc /build/
+COPY lib /build/lib
 COPY ui /build/ui
 
 WORKDIR /build
