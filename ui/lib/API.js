@@ -61,12 +61,10 @@ export default class API {
 		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/download/${start}/${stop}`);
 		return await URL.createObjectURL(await response.blob());
 	}
-	async getMotion(camera, start) {
+	async getMotion(camera) {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
-		if (!Number.isInteger(start))
-			throw new TypeError('start must be an integer.');
-		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/motion/${start}`);
+		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/motion`);
 		const events = new Events();
 		events.add(...(await response.json()).map(v => Event.fromObject(v)));
 		return events;
