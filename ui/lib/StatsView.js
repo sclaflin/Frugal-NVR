@@ -1,13 +1,12 @@
 import { html, css, LitElement } from 'lit';
-import { Need, NeedsMixin } from './NeedsMixin';
 import baseStyle from './base-style';
 import API from './API';
 import HostStat from './HostStat';
 
-export default class StatsView extends NeedsMixin(LitElement) {
+export default class StatsView extends LitElement {
 	#api;
 	#stats;
-	#connected = false;
+	#statsTimeout;
 
 	static styles = [
 		baseStyle,
@@ -31,11 +30,6 @@ export default class StatsView extends NeedsMixin(LitElement) {
 		`
 	];
 
-	constructor() {
-		super();
-
-		this.needs.add(new Need(API, 'api'));
-	}
 	get api() {
 		return this.#api;
 	}
@@ -43,15 +37,6 @@ export default class StatsView extends NeedsMixin(LitElement) {
 		if(!(v instanceof API))
 			throw new TypeError('api must be an API object.');
 		this.#api = v;
-
-		(async () => {
-			try {
-				await this.getStats();
-			}
-			catch(err) {
-				console.error(err);
-			}
-		})();
 	}
 	get stats() {
 		return this.#stats;
@@ -62,25 +47,28 @@ export default class StatsView extends NeedsMixin(LitElement) {
 		this.#stats = v;
 		this.requestUpdate();
 	}
-	get connected() {
-		return this.#connected;
-	}
 	connectedCallback() {
 		super.connectedCallback();
-		this.#connected = true;
+		this.getStats();
 	}
 	disconnectedCallback() {
 		super.disconnectedCallback();
-		this.#connected = false;
+		clearTimeout(this.#statsTimeout);
+		this.#statsTimeout = null;
 	}
 	async getStats() {
-		if(!this.connected || !this.api)
-			return;
-
-		this.stats = await this.api.getStats();
-		this.requestUpdate();
-
-		setTimeout(() => this.getStats(), 2000);
+		try {
+			if(!this.api)
+				return;
+			this.stats = await this.api.getStats();
+			this.requestUpdate();
+		}
+		catch(err) {
+			console.error(err);
+		}
+		finally {
+			this.#statsTimeout = setTimeout(() => this.getStats(), 2000);
+		}
 	}
 	render() {
 		return html`

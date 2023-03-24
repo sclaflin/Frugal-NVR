@@ -103,13 +103,13 @@ export default class FrugalNVR extends LitElement {
 		let view;
 		switch (this.navRequest.view) {
 			case VIEW_CAMERA:
-				view = html`<frugal-camera-view class="fade-in" camera-index=${this.cameras.items.indexOf(this.navRequest.data.camera)}></frugal-camera-view>`;
+				view = html`<frugal-camera-view class="fade-in" .config=${this.config} .api=${this.api} .camera=${this.navRequest.data.camera}></frugal-camera-view>`;
 				break;
 			case VIEW_STATS:
-				view = html`<frugal-stats class="fade-in"></frugal-stats>`;
+				view = html`<frugal-stats class="fade-in" .api=${this.api}></frugal-stats>`;
 				break;
 			case VIEW_OVERVIEW:
-				view = html`<frugal-overview class="fade-in"></frugal-overview>`;
+				view = html`<frugal-overview class="fade-in" .api=${this.api} .cameras=${this.cameras}></frugal-overview>`;
 				break;
 		}
 
@@ -120,7 +120,7 @@ export default class FrugalNVR extends LitElement {
 				</div>
 				<div class="content">
 					<div class="left">
-						<frugal-navigation ?use-overview=${this.useOverview}><frugal-navigation>
+						<frugal-navigation .cameras=${this.cameras} ?use-overview=${this.useOverview}><frugal-navigation>
 					</div>
 					<div class="right">
 						${view}

@@ -1,20 +1,20 @@
 import { html, css, LitElement } from 'lit';
-import { NeedsMixin } from './NeedsMixin';
-import { NeedsCamerasMixin } from './NeedsCamerasMixin';
-import { NeedsConfigMixin } from './NeedsConfigMixin';
-import { NeedsAPIMixin } from './NeedsAPIMixin';
 import baseStyle from './base-style';
 import Mpegts from 'mpegts.js';
+import Config from './Config';
 import Camera from './Camera';
+import API from './API';
 import './SegmentsView';
 import './EventsView';
 
-export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsConfigMixin(NeedsMixin(LitElement)))) {
+export default class CameraView extends LitElement {
+	#config;
+	#api;
+	#camera;
 	#player;
 	#updateInterval;
 
 	static properties = {
-		cameraIndex: { type: Number, attribute: 'camera-index' },
 		currentDate: { type: Number, attribute: 'current-date' }
 	};
 	static styles = [
@@ -79,13 +79,42 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 			}
 		`
 	];
-	async updateCamera(camera) {
-		try {
-			if (!(camera instanceof Camera))
-				throw new TypeError('camera must be a Camera object.');
+	get config() {
+		return this.#config;
+	}
+	set config(v) {
+		if(v && !(v instanceof Config))
+			throw new TypeError('config must be a Config object.');
+		this.#config = v;
+	}
+	get api() {
+		return this.#api;
+	}
+	set api(v) {
+		if(v && !(v instanceof API))
+			throw new TypeError('api must be an API object.');
+		this.#api = v;
+	}
+	get camera() {
+		return this.#camera;
+	}
+	set camera(v) {
+		if(v && !(v instanceof Camera))
+			throw new TypeError('camera must be a Camera object.');
+		this.#camera = v;
 
-			await camera.updateSegments();
-			await camera.updateEvents();
+		(async () => {
+			await this.updateCamera();
+			const segments = this.shadowRoot.querySelector('frugal-segments');
+			if (segments.maxDate === segments.currentDate)
+				await this.play();
+			else await this.showClip(segments.currentDate, segments.currentDate + segments.clipDuration);
+		})();
+	}
+	async updateCamera() {
+		try {
+			await this.camera.updateSegments();
+			await this.camera.updateEvents();
 
 			this.requestUpdate();
 		}
@@ -93,21 +122,16 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 			console.error(err);
 		}
 	}
-	async gotCameras() {
-		await this.updateCamera(this.cameras.items[this.cameraIndex]);
-		await this.play();
-	}
 	async play(objectURL) {
 		if (objectURL && typeof objectURL !== 'string')
 			throw new TypeError('objectURL must be a string.');
 		if (!Mpegts.getFeatureList().mseLivePlayback || !this.config)
 			return;
-		const camera = this.cameras.items[this.cameraIndex];
 		this.#player?.destroy();
 		this.#player = Mpegts.createPlayer({
 			type: 'flv',
 			isLive: !!objectURL,
-			url: objectURL || `${this.config.streamUrl}live/${camera.nameSanitized}.flv`
+			url: objectURL || `${this.config.streamUrl}live/${this.camera.nameSanitized}.flv`
 		});
 
 		const videoElement = this.renderRoot.querySelector('video');
@@ -123,7 +147,7 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 		const segments = this.shadowRoot.querySelector('frugal-segments');
 		segments.currentDate = start;
 		segments.clipDuration = stop - start;
-		const objectURL = await this.api.getClip(this.cameras.items[this.cameraIndex], start, stop);
+		const objectURL = await this.api.getClip(this.camera, start, stop);
 		this.play(objectURL);
 	}
 	async download(start, stop) {
@@ -131,13 +155,13 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 			return;
 		this.currentDate = start;
 
-		const objectURL = await this.api.getDownload(this.cameras.items[this.cameraIndex], start, stop);
+		const objectURL = await this.api.getDownload(this.camera, start, stop);
 		const link = document.createElement('a');
 		link.href = objectURL;
 		const _date = new Date(start * 1000);
 		const date = `${_date.getFullYear()}${`0${_date.getMonth() + 1}`.slice(-2)}${_date.getDate()}`;
 		const time = `${_date.getHours()}${_date.getMinutes()}${_date.getSeconds()}`;
-		link.download = `${this.cameras.items[this.cameraIndex].nameSanitized}_${date}_${time}.mp4`;
+		link.download = `${this.camera.nameSanitized}_${date}_${time}.mp4`;
 		link.dispatchEvent(
 			new MouseEvent('click', {
 				bubbles: true,
@@ -152,19 +176,18 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 		}, 100);
 	}
 	render() {
-		const camera = this.cameras?.items[this.cameraIndex];
-		const retainHours = camera?.retainHours || 0;
-		const start = camera?.segments?.items[0]?.date || Math.round(Date.now() / 1000);
-		const eventCount = camera?.events?.items.length || 0;
-		const segmentCount = camera?.segments?.items.length || 0;
-		const segmentsSize = camera?.segments?.bytes || 0;
+		const retainHours = this.camera?.retainHours || 0;
+		const start = this.camera?.segments?.items[0]?.date || Math.round(Date.now() / 1000);
+		const eventCount = this.camera?.events?.items.length || 0;
+		const segmentCount = this.camera?.segments?.items.length || 0;
+		const segmentsSize = this.camera?.segments?.bytes || 0;
 
 		// calculate the total time recorded
 		const segmentsTime = new Date(0);
 		const now = Math.round(Date.now() / 1000);
-		const lastSegment = camera?.segments?.items.slice(-1)[0];
+		const lastSegment = this.camera?.segments?.items.slice(-1)[0];
 		const accruedSegmentTime = now - (lastSegment?.truncated ? lastSegment.date : now);
-		segmentsTime.setSeconds((camera?.segments?.duration || 0) + accruedSegmentTime);
+		segmentsTime.setSeconds((this.camera?.segments?.duration || 0) + accruedSegmentTime);
 		const segmentsDuration = segmentsTime.toISOString().substring(11, 19);
 
 		return html`
@@ -174,9 +197,8 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 					<div class="events-label">${eventCount} Motion Events</div>
 					<div class="events-wrapper scrollable">
 						<frugal-events
-							camera-index=${this.cameraIndex}
-							event-count=${eventCount}
 							current-date=${this.currentDate}
+							.events=${this.camera?.events}
 							@clip=${e => { const { start, stop } = e.detail; this.showClip(start, stop); }}
 						></frugal-events>
 					</div>
@@ -185,6 +207,8 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 			<fieldset class="border rounded padded-most">
 				<legend>Timeline</legend>
 				<frugal-segments
+					.segments=${this.camera?.segments}
+					.events=${this.camera?.events}
 					start-date=${start}
 					segment-count=${segmentCount}
 					@currentDate=${e => this.currentDate = e.detail.currentDate}
@@ -216,22 +240,11 @@ export default class CameraView extends NeedsAPIMixin(NeedsCamerasMixin(NeedsCon
 			</fieldset>
 		`;
 	}
-	async attributeChangedCallback(...args) {
-		super.attributeChangedCallback(...args);
-
-		if (args[0] === 'camera-index' && this.cameras) {
-			await this.updateCamera(this.cameras.items[this.cameraIndex]);
-			const segments = this.shadowRoot.querySelector('frugal-segments');
-			if (segments.maxDate === segments.currentDate)
-				await this.play();
-			else await this.showClip(segments.currentDate, segments.currentDate + segments.clipDuration);
-		}
-	}
 	connectedCallback() {
 		super.connectedCallback();
 		this.#updateInterval = setInterval(async () => {
-			if (this.cameras)
-				await this.updateCamera(this.cameras.items[this.cameraIndex]);
+			if(this.camera)
+				await this.updateCamera();
 		}, 5000);
 	}
 	disconnectedCallback() {

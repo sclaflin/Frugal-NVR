@@ -1,10 +1,11 @@
 import { html, css, LitElement } from 'lit';
 import baseStyle from './base-style';
-import { NeedsCamerasMixin } from './NeedsCamerasMixin';
-import { NeedsMixin } from './NeedsMixin';
 import './EventView';
+import Events from './Events';
 
-export default class EventsView extends NeedsCamerasMixin(NeedsMixin(LitElement)) {
+export default class EventsView extends LitElement {
+	#events;
+
 	static styles = [
 		baseStyle,
 		css`
@@ -19,13 +20,20 @@ export default class EventsView extends NeedsCamerasMixin(NeedsMixin(LitElement)
 		`
 	];
 	static properties = {
-		cameraIndex: { type: Number, attribute: 'camera-index' },
-		currentDate: { type: Number, attribute: 'current-date' },
-		eventCount: { type: Number, attribute: 'event-count' }
+		currentDate: { type: Number, attribute: 'current-date' }
 	};
 
+	get events() {
+		return this.#events;
+	}
+	set events(v) {
+		if(v && !(v instanceof Events))
+			throw new TypeError('events must be an Events object.');
+		this.#events = v;
+	}
+
 	render() {
-		const events = this.cameras?.items[this.cameraIndex]?.events?.items.reverse().map((item) =>
+		const events = this.events?.items.reverse().map((item) =>
 			html`<frugal-event current-date=${this.currentDate} start=${item.start} stop=${item.stop}></frugal-event>`
 		);
 		return html`<div class="container">${events}</div>`;

@@ -1,13 +1,14 @@
 import { LitElement, html, css } from 'lit';
 import baseStyle from './base-style';
+import Segments from './Segments';
 import './Slider';
 
 export default class SegmentsView extends LitElement {
 	#maxDateInterval = null;
 	#maxDate = Math.floor(Date.now() / 1000);
+	#segments;
 
 	static properties = {
-		segmentCount: { type: Number, attribute: 'segment-count' },
 		startDate: { type: Number, attribute: 'start-date' },
 		currentDate: { type: Number, attribute: 'current-date' },
 		clipDuration: { type: Number, attribute: 'clip-duration' }
@@ -79,6 +80,14 @@ export default class SegmentsView extends LitElement {
 	}
 	get isLive() {
 		return this.maxDate === this.currentDate;
+	}
+	get segments() {
+		return this.#segments;
+	}
+	set segments(v) {
+		if(v && !(v instanceof Segments))
+			throw new TypeError('segments must be a Segments object.');
+		this.#segments = v;
 	}
 	connectedCallback() {
 		super.connectedCallback();

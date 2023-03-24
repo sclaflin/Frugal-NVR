@@ -1,15 +1,14 @@
 import { html, css, LitElement } from 'lit';
-import { NeedsMixin } from './NeedsMixin';
-import { NeedsCamerasMixin } from './NeedsCamerasMixin';
-import { NeedsAPIMixin } from './NeedsAPIMixin';
 import baseStyle from './base-style';
 import Camera from './Camera';
 import NavRequest from './NavRequest';
 import { VIEW_CAMERA } from './Constants';
+import Cameras from './Cameras';
 
-export default class Overview extends NeedsCamerasMixin(NeedsAPIMixin(NeedsMixin(LitElement))) {
+export default class Overview extends LitElement {
+	#cameras;
 	#showComposite = false;
-	#connected = false;
+	#thumbsTimeout;
 	static styles = [
 		baseStyle,
 		css`
@@ -33,17 +32,13 @@ export default class Overview extends NeedsCamerasMixin(NeedsAPIMixin(NeedsMixin
 			}
 		`
 	];
-	async gotAPI() {
-		try {
-			this.showComposite = await this.api.generateThumbs();
-			await this.getThumbs();
-		}
-		catch(err) {
-			console.error(err);
-		}
+	get cameras() {
+		return this.#cameras;
 	}
-	get connected() {
-		return this.#connected;
+	set cameras(v) {
+		if(v && !(v instanceof Cameras))
+			throw new TypeError('cameras must be a Cameras object.');
+		this.#cameras = v;
 	}
 	get showComposite() {
 		return this.#showComposite;
@@ -56,17 +51,17 @@ export default class Overview extends NeedsCamerasMixin(NeedsAPIMixin(NeedsMixin
 	}
 	connectedCallback() {
 		super.connectedCallback();
-		this.#connected = true;
+		this.getThumbs();
 	}
 	disconnectedCallback() {
 		super.disconnectedCallback();
-		this.#connected = false;
+		clearTimeout(this.#thumbsTimeout);
+		this.#thumbsTimeout = null;
 	}
 	thumbClickHandler(camera) {
 		if(!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 		
-
 		this.dispatchEvent(new CustomEvent('nav', { 
 			bubbles: true,
 			composed: true,
@@ -74,17 +69,17 @@ export default class Overview extends NeedsCamerasMixin(NeedsAPIMixin(NeedsMixin
 		}));
 	}
 	async getThumbs() {
-		if(!this.connected || !this.showComposite)
-			return;
-		
-		await Promise.all(
-			this.cameras.items.map(async camera =>
-				await camera.updateThumb()
-			)
-		);
-		this.requestUpdate();
-
-		setTimeout(() => this.getThumbs(), 2000);
+		try {
+			for(const camera of this.cameras.items)
+				await camera.updateThumb();
+			this.requestUpdate();
+		}
+		catch(err) {
+			console.log(err);
+		}
+		finally {
+			this.#thumbsTimeout = setTimeout(() => this.getThumbs(), 2000);
+		}
 	}
 	render() {
 		let gridSize = 0;

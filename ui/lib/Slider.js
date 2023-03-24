@@ -12,6 +12,7 @@ export default class Slider extends LitElement {
 				box-sizing: border-box;
 				font-size: 16px;
 				line-height: 1;
+				margin: 0;
 				height: 1em;
 				background-color: transparent;
 				cursor: pointer;
