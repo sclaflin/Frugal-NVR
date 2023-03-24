@@ -141,6 +141,27 @@ export default class StatsView extends LitElement {
 						</div>
 					</div>
 				</fieldset>
+				<fieldset class="border rounded padded-most">
+					<legend>Capture</legend>
+					<div class="stats">
+						<div class="badge border rounded shadow dark-bg">
+							<div class="header">Cameras</div>
+							<div class="value">${this.stats ? this.stats.cams.count : '?'}</div>
+						</div>
+						<div class="badge border rounded shadow dark-bg">
+							<div class="header">Disk</div>
+							<div class="value">${this.stats ? bytesString(this.stats.cams.bytes, 2) : '?'}</div>
+						</div>
+						<div class="badge border rounded shadow dark-bg">
+							<div class="header">Duration</div>
+							<div class="value">${this.stats ? durationString(this.stats.cams.duration) : '?'}</div>
+						</div>
+						<div class="badge border rounded shadow dark-bg">
+							<div class="header">Segments</div>
+							<div class="value">${this.stats ? this.stats.cams.segments : '?'}</div>
+						</div>
+					</div>
+				</fieldset>
 			</div>
 		`;
 	}
