@@ -184,14 +184,7 @@ export default class CameraView extends LitElement {
 		const eventCount = this.camera?.events?.items.length || 0;
 		const segmentCount = this.camera?.segments?.items.length || 0;
 		const segmentsSize = this.camera?.segments?.bytes || 0;
-
-		// calculate the total time recorded
-		const segmentsTime = new Date(0);
-		const now = Math.round(Date.now() / 1000);
-		const lastSegment = this.camera?.segments?.items.slice(-1)[0];
-		const accruedSegmentTime = now - (lastSegment?.truncated ? lastSegment.date : now);
-		segmentsTime.setSeconds((this.camera?.segments?.duration || 0) + accruedSegmentTime);
-		const segmentsDuration = segmentsTime.toISOString().substring(11, 19);
+		const duration = this.camera?.segments?.durationString;
 
 		return html`
 			<div class="video-parent">
@@ -229,7 +222,7 @@ export default class CameraView extends LitElement {
 					</div>
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Duration</div>
-						<div class="value">${segmentsDuration}</div>
+						<div class="value">${duration}</div>
 					</div>
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Retention</div>
