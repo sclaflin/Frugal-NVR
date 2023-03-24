@@ -88,7 +88,7 @@ export default class TimelineView extends LitElement {
 				stop * widthPerSecond :
 				((event.stop - start) * widthPerSecond) - x1;
 		
-			ctx.fillStyle = '#ff0000';
+			ctx.fillStyle = 'rgba(255, 0, 0, 0.65)';
 			ctx.fillRect(x1, 0, x2, canvas.height);
 		}
 	}
