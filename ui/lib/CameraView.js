@@ -4,7 +4,7 @@ import Mpegts from 'mpegts.js';
 import Config from './Config';
 import Camera from './Camera';
 import API from './API';
-import { durationString } from './Utils';
+import { durationString, bytesString } from './Utils';
 import './SegmentsView';
 import './EventsView';
 
@@ -185,7 +185,7 @@ export default class CameraView extends LitElement {
 		const eventCount = this.camera?.events?.items.length || 0;
 		const segmentCount = this.camera?.segments?.items.length || 0;
 		const segmentsSize = this.camera?.segments?.bytes || 0;
-		const duration = durationString(this.camera?.segments?.duration || 0);
+		const duration = this.camera?.segments?.duration || 0;
 
 		return html`
 			<div class="video-parent">
@@ -219,15 +219,15 @@ export default class CameraView extends LitElement {
 				<div class="storage">
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Disk</div>
-						<div class="value">${Math.round(segmentsSize / 1024 / 1024 / 1024 * 100) / 100} GiB</div>
+						<div class="value">${bytesString(segmentsSize)}</div>
 					</div>
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Duration</div>
-						<div class="value">${duration}</div>
+						<div class="value">${durationString(duration)}</div>
 					</div>
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Retention</div>
-						<div class="value">${retainHours} H</div>
+						<div class="value">${durationString(retainHours * 60 * 60)}</div>
 					</div>
 					<div class="badge border rounded shadow dark-bg">
 						<div class="header">Segments</div>
