@@ -4,6 +4,7 @@ import Mpegts from 'mpegts.js';
 import Config from './Config';
 import Camera from './Camera';
 import API from './API';
+import { durationString } from './Utils';
 import './SegmentsView';
 import './EventsView';
 
@@ -184,7 +185,7 @@ export default class CameraView extends LitElement {
 		const eventCount = this.camera?.events?.items.length || 0;
 		const segmentCount = this.camera?.segments?.items.length || 0;
 		const segmentsSize = this.camera?.segments?.bytes || 0;
-		const duration = this.camera?.segments?.durationString;
+		const duration = durationString(this.camera?.segments?.duration || 0);
 
 		return html`
 			<div class="video-parent">

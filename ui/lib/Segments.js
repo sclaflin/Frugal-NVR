@@ -16,17 +16,6 @@ export default class Segments extends Iterable {
 		const accruedSegmentTime = now - (lastSegment?.truncated ? lastSegment.date : now);
 		return this.items.slice(0, -1).reduce((p, c) => p + c.duration, 0) + accruedSegmentTime;
 	}
-	get durationString() {
-		const duration = this.duration;
-		const durationParts = [
-			{ value: Math.floor(duration / (24 * 60 * 60)), label: 'd' },
-			{ value: Math.floor((duration % (24 * 60 * 60)) / (60 * 60)), label: 'h' },
-			{ value: Math.floor(((duration % (24 * 60 * 60)) % (60 * 60)) / 60), label: 'm' },
-			{ value: Math.floor((((duration % (24 * 60 * 60)) % (60 * 60)) % 60)), label: 's' }
-		];
-		const index = durationParts.findIndex(v => v.value !== 0);
-		return durationParts.slice(index, index + 2).map(v => `${v.value}${v.label}`).join(' ');
-	}
 	get bytes() {
 		return this.items.reduce((p, c) => p + c.bytes, 0);
 	}

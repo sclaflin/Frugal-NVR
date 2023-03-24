@@ -2,6 +2,7 @@ import { html, css, LitElement } from 'lit';
 import baseStyle from './base-style';
 import API from './API';
 import HostStat from './HostStat';
+import { durationString, bytesString } from './Utils';
 
 export default class StatsView extends LitElement {
 	#api;
@@ -90,7 +91,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.memory() / 1024 / 1024) : '?'} MiB</div>
+							<div class="value">${this.stats ? bytesString(this.stats.procs.memory(), 2) : '?'}</div>
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem %</div>
@@ -111,7 +112,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.memory('node') / 1024 / 1024) : '?'} MiB</div>
+							<div class="value">${this.stats ? bytesString(this.stats.procs.memory('node'), 2) : '?'}</div>
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem %</div>
@@ -132,7 +133,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.memory('ffmpeg') / 1024 / 1024) : '?'} MiB</div>
+							<div class="value">${this.stats ? bytesString(this.stats.procs.memory('ffmpeg'), 2) : '?'}</div>
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem %</div>
