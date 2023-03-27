@@ -7,6 +7,7 @@ import API from './API';
 import { durationString, bytesString } from './Utils';
 import './SegmentsView';
 import './EventsView';
+import './CameraControlView';
 
 // Turn off the noise. ;)
 Mpegts.LoggingControl.enableVerbose = false;
@@ -234,6 +235,10 @@ export default class CameraView extends LitElement {
 						<div class="value">${segmentCount}</div>
 					</div>
 				</div>
+			</fieldset>
+			<fieldset class="border rounded padded-most">
+				<legend>Control</legend>
+				<frugal-camera-control .camera=${this.camera}></frugal-camera-control>
 			</fieldset>
 		`;
 	}

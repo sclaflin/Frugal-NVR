@@ -69,4 +69,10 @@ export default class API {
 		events.add(...(await response.json()).map(v => Event.fromObject(v)));
 		return events;
 	}
+	async reboot(camera) {
+		if (!(camera instanceof Camera))
+			throw new TypeError('camera must be a Camera object.');
+		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/reboot`);
+		return await response.json();
+	}
 }

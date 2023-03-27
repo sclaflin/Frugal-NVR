@@ -61,6 +61,9 @@ export default class Camera extends EventEmitter {
 	get events() {
 		return this.#events;
 	}
+	async reboot() {
+		return await this.api.reboot(this);
+	}
 	toJSON() {
 		return {
 			name: this.name,
