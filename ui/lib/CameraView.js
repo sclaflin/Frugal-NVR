@@ -31,7 +31,7 @@ export default class CameraView extends LitElement {
 			video {
 				width: 100%;
 			}
-			.video-overlay {
+			.events-overlay {
 				position: absolute;
 				top: 1em;
 				right: calc(50% - 5em);
@@ -57,18 +57,18 @@ export default class CameraView extends LitElement {
 				white-space: nowrap;
 				text-overflow: ellipsis;
 			}
-			.video-overlay:hover,
-			.video-overlay:active {
+			.events-overlay:hover,
+			.events-overlay:active {
 				right: 1em;
 				left: 1em;
 				height: calc(100% - 2em);
 			}
-			.video-overlay:hover .events-label,
-			.video-overlay:active .events-label {
+			.events-overlay:hover .events-label,
+			.events-overlay:active .events-label {
 				display: none;
 			}
-			.video-overlay:hover .events-wrapper,
-			.video-overlay:active .events-wrapper {
+			.events-overlay:hover .events-wrapper,
+			.events-overlay:active .events-wrapper {
 				opacity: 1;
 			}
 			.storage {
@@ -191,7 +191,7 @@ export default class CameraView extends LitElement {
 		return html`
 			<div class="video-parent">
 				<video class="border rounded shadow" controls muted></video>
-				<div class="video-overlay rounded dark-bg">
+				<div class="events-overlay rounded dark-bg">
 					<div class="events-label">${eventCount} Motion Events</div>
 					<div class="events-wrapper scrollable">
 						<frugal-events
