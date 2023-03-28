@@ -123,7 +123,6 @@ export default class SegmentsView extends LitElement {
 				bubbles: true,
 				composed: true,
 				detail: {
-					isLive: true,
 					currentDate: this.currentDate
 				}
 			}));
@@ -142,7 +141,6 @@ export default class SegmentsView extends LitElement {
 			bubbles: true,
 			composed: true,
 			detail: {
-				isLive: this.currentDate === this.maxDate,
 				currentDate: this.currentDate
 			}
 		}));
@@ -158,7 +156,6 @@ export default class SegmentsView extends LitElement {
 				bubbles: true,
 				composed: true,
 				detail: {
-					isLive: this.currentDate === this.maxDate,
 					start: this.currentDate,
 					stop: this.currentDate + this.clipDuration
 				}

@@ -20,6 +20,7 @@ export default class CameraView extends LitElement {
 	#player;
 	#updateInterval;
 	#currentDate;
+	#isLive;
 
 	static styles = [
 		baseStyle,
@@ -132,6 +133,16 @@ export default class CameraView extends LitElement {
 
 		this.requestUpdate();
 	}
+	get isLive() {
+		return this.#isLive;
+	}
+	set isLive(v) {
+		if(typeof v !== 'boolean')
+			throw new TypeError('isLive must be a boolean.');
+		this.#isLive = v;
+
+		this.requestUpdate();
+	}
 	async updateCamera() {
 		try {
 			await this.camera.updateSegments();
@@ -148,10 +159,11 @@ export default class CameraView extends LitElement {
 			throw new TypeError('objectURL must be a string.');
 		if (!Mpegts.getFeatureList().mseLivePlayback || !this.config)
 			return;
+		this.isLive = !objectURL;
 		this.#player?.destroy();
 		this.#player = Mpegts.createPlayer({
 			type: 'flv',
-			isLive: !!objectURL,
+			isLive: this.isLive,
 			url: objectURL || `${this.config.streamUrl}live/${this.camera.nameSanitized}.flv`
 		});
 
