@@ -19,10 +19,8 @@ export default class CameraView extends LitElement {
 	#camera;
 	#player;
 	#updateInterval;
+	#currentDate;
 
-	static properties = {
-		currentDate: { type: Number, attribute: 'current-date' }
-	};
 	static styles = [
 		baseStyle,
 		css`
@@ -123,6 +121,16 @@ export default class CameraView extends LitElement {
 				await this.play();
 			else await this.showClip(segments.currentDate, segments.currentDate + segments.clipDuration);
 		})();
+	}
+	get currentDate() {
+		return this.#currentDate;
+	}
+	set currentDate(v) {
+		if(!Number.isInteger(v))
+			throw new TypeError('currentDate must be an integer.');
+		this.#currentDate = v;
+
+		this.requestUpdate();
 	}
 	async updateCamera() {
 		try {
