@@ -34,8 +34,8 @@ export default class NavigationView extends LitElement {
 	}
 	render() {
 		return html`
-			${this.useOverview ? html`<a class="larger item rounded padded" @click=${e => this.handler(e, VIEW_OVERVIEW)}>Overview</a>` : null}
-			<a class="larger item rounded padded" @click=${e => this.handler(e, VIEW_STATS)}>Stats</a>
+			${this.useOverview ? html`<a class="larger item clickable rounded padded" @click=${e => this.handler(e, VIEW_OVERVIEW)}>Overview</a>` : null}
+			<a class="larger item clickable rounded padded" @click=${e => this.handler(e, VIEW_STATS)}>Stats</a>
 			<frugal-camera-list .cameras=${this.cameras} @camera=${e => this.handler(e, VIEW_CAMERA)}></frugal-camera-list>
 		`;
 	}

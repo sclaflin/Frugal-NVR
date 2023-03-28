@@ -62,6 +62,11 @@ export default css`
 	}
 	.clickable {
 		cursor: pointer;
+		transition: all 0.25s ease;
+	}
+	.clickable:hover,
+	.clickable:active {
+		background-color: rgba(255, 255, 255, 0.25);
 	}
 	.badge {
 		width: 5em;
@@ -82,12 +87,8 @@ export default css`
 	.item {
 		display: block;
 		cursor: pointer;
-		border: 1px solid transparent;
 		margin-bottom: 0.25em;
 		transition: all 0.25s ease;
-	}
-	.item:hover {
-		border: 1px solid white;
 	}
 	legend {
 		margin: 0 auto;

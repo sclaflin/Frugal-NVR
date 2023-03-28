@@ -27,7 +27,7 @@ export default class CameraListView extends LitElement {
 	}
 	render() {
 		const cameras = this.cameras?.items.map(
-			camera => html`<a class="item rounded padded" @click=${() => this.clickHandler(camera)}>${camera.name}</a>`
+			camera => html`<a class="item rounded clickable padded" @click=${() => this.clickHandler(camera)}>${camera.name}</a>`
 		);
 		return html`
 			<fieldset class="border rounded padded">
