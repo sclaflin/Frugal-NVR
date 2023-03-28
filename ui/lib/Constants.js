@@ -6,3 +6,7 @@ export const VIEWS = [
 	VIEW_STATS,
 	VIEW_CAMERA
 ];
+export const ARROW_UP = '⇡';
+export const ARROW_RIGHT = '⇢';
+export const ARROW_DOWN = '⇣';
+export const ARROW_LEFT = '⇠';

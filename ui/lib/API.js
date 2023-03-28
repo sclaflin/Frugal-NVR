@@ -4,6 +4,7 @@ import Segment from './Segment';
 import Segments from './Segments';
 import Event from './Event';
 import Events from './Events';
+import PTZPosition from './PTZPosition';
 
 export default class API {
 	#url;
@@ -73,6 +74,19 @@ export default class API {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/capabilities`);
+		return await response.json();
+	}
+	async setPTZPosition(position, camera) {
+		if(!(position instanceof PTZPosition))
+			throw new TypeError('position must be a PTZPosition object.');
+		if (!(camera instanceof Camera))
+			throw new TypeError('camera must be a Camera object.');
+		const requestOptions = {
+			method: 'PUT',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify(position)
+		};
+		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/ptz/position`, requestOptions);
 		return await response.json();
 	}
 	async reboot(camera) {

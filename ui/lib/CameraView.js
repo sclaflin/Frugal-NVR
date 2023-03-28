@@ -8,6 +8,7 @@ import { durationString, bytesString } from './Utils';
 import './SegmentsView';
 import './EventsView';
 import './CameraControlView';
+import './PTZView';
 
 // Turn off the noise. ;)
 Mpegts.LoggingControl.enableVerbose = false;
@@ -30,6 +31,13 @@ export default class CameraView extends LitElement {
 			}
 			video {
 				width: 100%;
+			}
+			frugal-ptz {
+				position: absolute;
+				height: 6em;
+				width: 6em;
+				top: calc(50% - 3em);
+				right: 1em;
 			}
 			.events-overlay {
 				position: absolute;
@@ -191,6 +199,7 @@ export default class CameraView extends LitElement {
 		return html`
 			<div class="video-parent">
 				<video class="border rounded shadow" controls muted></video>
+				${(this.camera?.capabilities?.indexOf('PTZ') >= 0) ? html`<frugal-ptz .camera=${this.camera}></frugal-ptz>` : ''}
 				<div class="events-overlay rounded dark-bg">
 					<div class="events-label">${eventCount} Motion Events</div>
 					<div class="events-wrapper scrollable">

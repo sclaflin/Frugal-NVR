@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import API from './API';
+import PTZPosition from './PTZPosition';
 
 export default class Camera extends EventEmitter {
 	#name;
@@ -67,6 +68,11 @@ export default class Camera extends EventEmitter {
 	}
 	get capabilities() {
 		return this.#capabilities;
+	}
+	async setPTZPosition(position) {
+		if(!(position instanceof PTZPosition))
+			throw new TypeError('position must be a Position object.');
+		return await this.api.setPTZPosition(position, this);
 	}
 	async reboot() {
 		return await this.api.reboot(this);
