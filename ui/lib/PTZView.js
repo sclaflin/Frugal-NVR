@@ -39,10 +39,6 @@ export default class PTZView extends LitElement {
 	get position() {
 		return this.#position;
 	}
-	async firstUpdated() {
-		super.firstUpdated();
-		this.#position = await this.camera.getPTZPosition();
-	}
 	async handleClick(e, code) {
 		e.preventDefault();
 		const position = PTZPosition.fromObject({
