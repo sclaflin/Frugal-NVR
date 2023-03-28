@@ -69,6 +69,12 @@ export default class API {
 		events.add(...(await response.json()).map(v => Event.fromObject(v)));
 		return events;
 	}
+	async getCapabilities(camera) {
+		if (!(camera instanceof Camera))
+			throw new TypeError('camera must be a Camera object.');
+		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/capabilities`);
+		return await response.json();
+	}
 	async reboot(camera) {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');

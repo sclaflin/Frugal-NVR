@@ -6,6 +6,7 @@ export default class Camera extends EventEmitter {
 	#videoPath;
 	#retainHours;
 	#api;
+	#capabilities;
 	#thumb;
 	#segments;
 	#events;
@@ -60,6 +61,12 @@ export default class Camera extends EventEmitter {
 	}
 	get events() {
 		return this.#events;
+	}
+	async getCapabilities() {
+		this.#capabilities = await this.api.getCapabilities(this);
+	}
+	get capabilities() {
+		return this.#capabilities;
 	}
 	async reboot() {
 		return await this.api.reboot(this);

@@ -23,6 +23,7 @@ import Cameras from './Cameras';
 				camera.api = api;
 				await camera.updateSegments();
 				await camera.updateEvents();
+				await camera.getCapabilities();
 				return camera;
 			})
 		));
