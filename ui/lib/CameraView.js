@@ -226,7 +226,7 @@ export default class CameraView extends LitElement {
 						<frugal-events
 							current-date=${this.currentDate}
 							.events=${this.camera?.events}
-							@clip=${e => { const { start, stop } = e.detail; this.showClip(start, stop); }}
+							@clip=${e => this.showClip(e.detail.start, e.detail.stop)}
 						></frugal-events>
 					</div>
 				</div>
@@ -239,7 +239,7 @@ export default class CameraView extends LitElement {
 					start-date=${start}
 					segment-count=${segmentCount}
 					@currentDate=${e => this.currentDate = e.detail.currentDate}
-					@clip=${e => { const { start, stop } = e.detail; this.showClip(start, stop); }}
+					@clip=${e => this.showClip(e.detail.start, e.detail.stop)}
 					@live=${() => this.play()}
 					@download=${(e) => this.download(e.detail.start, e.detail.stop)}
 				></frugal-segments>
