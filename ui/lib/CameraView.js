@@ -219,7 +219,7 @@ export default class CameraView extends LitElement {
 		return html`
 			<div class="video-parent">
 				<video class="border rounded shadow" controls muted></video>
-				${(this.camera?.capabilities?.indexOf('PTZ') >= 0) ? html`<frugal-ptz .camera=${this.camera}></frugal-ptz>` : ''}
+				${(this.camera?.capabilities?.indexOf('PTZ') >= 0 && this.isLive) ? html`<frugal-ptz .camera=${this.camera}></frugal-ptz>` : ''}
 				<div class="events-overlay rounded dark-bg">
 					<div class="events-label">${eventCount} Motion Events</div>
 					<div class="events-wrapper scrollable">
