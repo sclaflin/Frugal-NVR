@@ -27,20 +27,28 @@ export default class API {
 	}
 	async getCameras() {
 		const response = await fetch(`${this.apiUrl}cameras`);
+		if (!response.ok)
+			throw new Error(await response.json());
 		return await response.json();
 	}
 	async getStats() {
 		const response = await fetch(`${this.apiUrl}stats`);
+		if (!response.ok)
+			throw new Error(await response.json());
 		return HostStat.fromObject(await response.json());
 	}
 	async generateThumbs() {
 		const response = await fetch(`${this.apiUrl}generate-thumbs`);
+		if (!response.ok)
+			throw new Error(await response.json());
 		return await response.json();
 	}
 	async getSegments(camera) {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/segments`);
+		if (!response.ok)
+			throw new Error(await response.json());
 		const segments = new Segments();
 		segments.add(...(await response.json()).map(v => Segment.fromObject(v)));
 		return segments;
@@ -59,6 +67,8 @@ export default class API {
 		if (!Number.isInteger(stop))
 			throw new TypeError('stop must be an integer.');
 		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/clip/${start}/${stop}`);
+		if (!response.ok)
+			throw new Error(await response.json());
 		return await URL.createObjectURL(await response.blob());
 	}
 	async getDownload(camera, start, stop) {
@@ -69,12 +79,16 @@ export default class API {
 		if (!Number.isInteger(stop))
 			throw new TypeError('stop must be an integer.');
 		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/download/${start}/${stop}`);
+		if (!response.ok)
+			throw new Error(await response.json());
 		return await URL.createObjectURL(await response.blob());
 	}
 	async getMotion(camera) {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/motion`);
+		if (!response.ok)
+			throw new Error(await response.json());
 		const events = new Events();
 		events.add(...(await response.json()).map(v => Event.fromObject(v)));
 		return events;
@@ -83,6 +97,8 @@ export default class API {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/capabilities`);
+		if (!response.ok)
+			throw new Error(await response.json());
 		return await response.json();
 	}
 	async setPTZPosition(position, camera) {
@@ -96,12 +112,16 @@ export default class API {
 			body: JSON.stringify(position)
 		};
 		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/ptz/position`, requestOptions);
+		if (!response.ok)
+			throw new Error(await response.json());
 		return await response.json();
 	}
 	async reboot(camera) {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/reboot`);
+		if (!response.ok)
+			throw new Error(await response.json());
 		return await response.json();
 	}
 }
