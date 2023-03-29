@@ -113,15 +113,19 @@ export default class CameraView extends LitElement {
 	set camera(v) {
 		if(v && !(v instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
+
+		const lastCamera = this.camera;
 		this.#camera = v;
 
-		(async () => {
-			await this.updateCamera();
-			const segments = this.shadowRoot.querySelector('frugal-segments');
-			if (segments.maxDate === segments.currentDate)
-				await this.play();
-			else await this.showClip(segments.currentDate, segments.currentDate + segments.clipDuration);
-		})();
+		if(lastCamera !== this.camera) {
+			(async () => {
+				await this.updateCamera();
+				const segments = this.shadowRoot.querySelector('frugal-segments');
+				if (segments.maxDate === segments.currentDate)
+					await this.play();
+				else await this.showClip(segments.currentDate, segments.currentDate + segments.clipDuration);
+			})();
+		}
 	}
 	get currentDate() {
 		return this.#currentDate;
