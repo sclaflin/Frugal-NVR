@@ -58,7 +58,7 @@ export default class Camera extends EventEmitter {
 		return this.#segments;
 	}
 	async updateEvents() {
-		this.#events = await this.api.getMotion(this, this.segments.items?.[0].date);
+		this.#events = await this.api.getMotion(this, this.segments.items?.[0]?.date);
 	}
 	get events() {
 		return this.#events;

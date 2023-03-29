@@ -62,7 +62,7 @@ export default class TimelineView extends LitElement {
 		const segments = this.segments?.items;
 		const events = this.events?.items;
 		if (!canvas) return;
-		if(!segments) return;
+		if(!segments?.length) return;
 
 		const firstSegment = segments[0];
 		const lastSegment = segments.slice(-1)[0];
