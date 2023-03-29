@@ -1,9 +1,6 @@
 import { html, css, LitElement } from 'lit';
 import baseStyle from './base-style';
-import Config from './Config';
 import { VIEW_CAMERA, VIEW_OVERVIEW, VIEW_STATS } from './Constants';
-import API from './API';
-import Cameras from './Cameras';
 import './NavigationView';
 import './CameraView';
 import './Overview';
@@ -83,22 +80,6 @@ export default class FrugalNVR extends LitElement {
 		this.#navRequest = v;
 		this.requestUpdate();
 	}
-	needsHandler(e) {
-		const { needs, target } = e.detail;
-		for (const need of needs) {
-			switch (need.type) {
-				case Config:
-					target[need.property] = this.config;
-					break;
-				case Cameras:
-					target[need.property] = this.cameras;
-					break;
-				case API:
-					target[need.property] = this.api;
-					break;
-			}
-		}
-	}
 	render() {
 		let view;
 		switch (this.navRequest.view) {
@@ -114,7 +95,7 @@ export default class FrugalNVR extends LitElement {
 		}
 
 		return html`
-			<div @needs=${e => this.needsHandler(e)} @nav=${e => this.navRequest = e.detail} class="main">
+			<div @nav=${e => this.navRequest = e.detail} class="main">
 				<div class="title">
 					<h1>Frugal NVR</h1>
 				</div>
