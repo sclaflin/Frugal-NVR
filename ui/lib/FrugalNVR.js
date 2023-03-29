@@ -7,6 +7,8 @@ import './Overview';
 import './StatsView';
 import './EventsView';
 import NavRequest from './NavRequest';
+import Dialogs from './Dialogs';
+import { NotifyView } from './DialogView';
 
 export default class FrugalNVR extends LitElement {
 	#config;
@@ -14,6 +16,7 @@ export default class FrugalNVR extends LitElement {
 	#cameras;
 	#useOverview;
 	#navRequest;
+	#dialogs;
 
 	static styles = [
 		baseStyle,
@@ -56,6 +59,7 @@ export default class FrugalNVR extends LitElement {
 		this.#api = api;
 		this.#cameras = cameras;
 		this.#useOverview = useOverview;
+		this.#dialogs = new Dialogs();
 		this.navRequest = new NavRequest(this.useOverview ? VIEW_OVERVIEW : VIEW_STATS);
 	}
 	get config() {
@@ -70,6 +74,9 @@ export default class FrugalNVR extends LitElement {
 	get useOverview() {
 		return this.#useOverview;
 	}
+	get dialogs() {
+		return this.#dialogs;
+	}
 	get navRequest() {
 		return this.#navRequest;
 	}
@@ -78,6 +85,24 @@ export default class FrugalNVR extends LitElement {
 			throw new TypeError('navRequest must be a NavRequest object.');
 
 		this.#navRequest = v;
+		this.requestUpdate();
+	}
+	notifyHandler(e) {
+		const dialog = new NotifyView();
+		dialog.title = document.createTextNode(e.detail.title);
+		dialog.content = document.createTextNode(e.detail.content);
+		dialog.opened = true;
+		const dialogHandler = () => {
+			dialog.opened = false;
+			this.dialogs.remove(dialog);
+			dialog.removeEventListener('cancel', dialogHandler);
+			dialog.removeEventListener('ok', dialogHandler);
+			this.requestUpdate();
+		};
+		dialog.addEventListener('cancel', dialogHandler);
+		dialog.addEventListener('ok', dialogHandler);
+		this.dialogs.add(dialog);
+
 		this.requestUpdate();
 	}
 	render() {
@@ -95,7 +120,11 @@ export default class FrugalNVR extends LitElement {
 		}
 
 		return html`
-			<div @nav=${e => this.navRequest = e.detail} class="main">
+			<div
+				@nav=${e => this.navRequest = e.detail}
+				@notify=${e => this.notifyHandler(e)}
+				class="main"
+			>
 				<div class="title">
 					<h1>Frugal NVR</h1>
 				</div>
@@ -107,6 +136,7 @@ export default class FrugalNVR extends LitElement {
 						${view}
 					</div>
 				</div>
+				${this.dialogs.items}
 			</div>
 		`;
 	}
