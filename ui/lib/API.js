@@ -7,31 +7,40 @@ import Events from './Events';
 import PTZPosition from './PTZPosition';
 
 export default class API {
-	#url;
-	constructor(url) {
-		if (!(url instanceof URL))
-			throw new TypeError('url must be a URL object.');
-		this.#url = url;
+	#apiUrl;
+	#webSocketUrl;
+	#webSocket;
+	constructor(apiUrl, webSocketUrl) {
+		if (!(apiUrl instanceof URL))
+			throw new TypeError('apiUrl must be a URL object.');
+		if (!(webSocketUrl instanceof URL))
+			throw new TypeError('webSocketUrl must be a URL object.');
+		this.#apiUrl = apiUrl;
+		this.#webSocketUrl = webSocketUrl;
+		this.#webSocket = new WebSocket(this.webSocketUrl, 'frugal-nvr');
 	}
-	get url() {
-		return this.#url;
+	get apiUrl() {
+		return this.#apiUrl;
+	}
+	get webSocketUrl() {
+		return this.#webSocketUrl;
 	}
 	async getCameras() {
-		const response = await fetch(`${this.url}cameras`);
+		const response = await fetch(`${this.apiUrl}cameras`);
 		return await response.json();
 	}
 	async getStats() {
-		const response = await fetch(`${this.url}stats`);
+		const response = await fetch(`${this.apiUrl}stats`);
 		return HostStat.fromObject(await response.json());
 	}
 	async generateThumbs() {
-		const response = await fetch(`${this.url}generate-thumbs`);
+		const response = await fetch(`${this.apiUrl}generate-thumbs`);
 		return await response.json();
 	}
 	async getSegments(camera) {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
-		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/segments`);
+		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/segments`);
 		const segments = new Segments();
 		segments.add(...(await response.json()).map(v => Segment.fromObject(v)));
 		return segments;
@@ -39,7 +48,7 @@ export default class API {
 	async getThumb(camera) {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
-		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/thumb`);
+		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/thumb`);
 		return await URL.createObjectURL(await response.blob());
 	}
 	async getClip(camera, start, stop) {
@@ -49,7 +58,7 @@ export default class API {
 			throw new TypeError('start must be an integer.');
 		if (!Number.isInteger(stop))
 			throw new TypeError('stop must be an integer.');
-		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/clip/${start}/${stop}`);
+		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/clip/${start}/${stop}`);
 		return await URL.createObjectURL(await response.blob());
 	}
 	async getDownload(camera, start, stop) {
@@ -59,13 +68,13 @@ export default class API {
 			throw new TypeError('start must be an integer.');
 		if (!Number.isInteger(stop))
 			throw new TypeError('stop must be an integer.');
-		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/download/${start}/${stop}`);
+		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/download/${start}/${stop}`);
 		return await URL.createObjectURL(await response.blob());
 	}
 	async getMotion(camera) {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
-		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/motion`);
+		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/motion`);
 		const events = new Events();
 		events.add(...(await response.json()).map(v => Event.fromObject(v)));
 		return events;
@@ -73,7 +82,7 @@ export default class API {
 	async getCapabilities(camera) {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
-		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/capabilities`);
+		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/capabilities`);
 		return await response.json();
 	}
 	async setPTZPosition(position, camera) {
@@ -86,13 +95,13 @@ export default class API {
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify(position)
 		};
-		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/ptz/position`, requestOptions);
+		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/ptz/position`, requestOptions);
 		return await response.json();
 	}
 	async reboot(camera) {
 		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
-		const response = await fetch(`${this.url}camera/${camera.nameSanitized}/reboot`);
+		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/reboot`);
 		return await response.json();
 	}
 }

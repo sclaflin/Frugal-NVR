@@ -12,6 +12,7 @@ try {
 	// configured hostname & ports.
 	await fs.writeFile('./web/config.json', JSON.stringify({
 		apiUrl: `http://${config.hostname}:${config.webUI.port || constants.WEB_UI_DEFAULT_PORT}`,
+		webSocketUrl: `ws://${config.hostname}:${config.webUI.port || constants.WEB_UI_DEFAULT_PORT}`,
 		streamUrl: `http://${config.hostname}:${config.mediaServer.http.port}`
 	}));
 }

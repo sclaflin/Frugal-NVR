@@ -13,10 +13,10 @@ import Cameras from './Cameras';
 		// collect required dependencies
 		const response = await fetch('./config.json', { mode: 'no-cors' });
 		const config = Config.fromObject(await response.json());
-		const api = new API(config.apiUrl);
+		const api = new API(config.apiUrl, config.webSocketUrl);
 		const useOverview = await api.generateThumbs();
 		const cameras = new Cameras();
-
+		
 		cameras.add(...await Promise.all((await api.getCameras())
 			.map(async v => {
 				const camera = Camera.fromObject(v);
