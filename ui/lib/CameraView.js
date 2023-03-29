@@ -177,15 +177,28 @@ export default class CameraView extends LitElement {
 		await this.#player.play();
 	}
 	async showClip(start, stop) {
-		if (!this.api)
-			return;
-		this.currentDate = start;
-		// make sure segments view is updated with the clip start
-		const segments = this.shadowRoot.querySelector('frugal-segments');
-		segments.currentDate = start;
-		segments.clipDuration = stop - start;
-		const objectURL = await this.api.getClip(this.camera, start, stop);
-		this.play(objectURL);
+		try {
+			if (!this.api)
+				return;
+			this.currentDate = start;
+			// make sure segments view is updated with the clip start
+			const segments = this.shadowRoot.querySelector('frugal-segments');
+			segments.currentDate = start;
+			segments.clipDuration = stop - start;
+			const objectURL = await this.api.getClip(this.camera, start, stop);
+			this.play(objectURL);
+		}
+		catch(err) {
+			console.error(err);
+			this.dispatchEvent(new CustomEvent('notify', {
+				bubbles: true,
+				composed: true,
+				detail: {
+					title: 'API Error',
+					content: err.message
+				}
+			}));
+		}
 	}
 	async download(start, stop) {
 		if (!this.api)
