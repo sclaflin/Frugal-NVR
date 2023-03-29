@@ -7,7 +7,8 @@ export function durationString(duration) {
 		{ value: Math.floor(((duration % (24 * 60 * 60)) % (60 * 60)) / 60), label: 'M' },
 		{ value: Math.floor((((duration % (24 * 60 * 60)) % (60 * 60)) % 60)), label: 'S' }
 	];
-	const index = durationParts.findIndex(v => v.value !== 0);
+	let index = durationParts.findIndex(v => v.value !== 0);
+	if(index === -1) index = durationParts.length - 1;
 	return durationParts.slice(index, index + 2).map(v => `${v.value}${v.label}`).join(' ');
 }
 export function bytesString(bytes, scale = 0) {
@@ -27,5 +28,6 @@ export function bytesString(bytes, scale = 0) {
 		{ value: Math.round(bytes % tebibyte % gibibyte % mebibyte / kibibyte * 10 ** scale) / 10 ** scale, label: 'KiB' },
 		{ value: bytes % tebibyte % gibibyte % mebibyte % kibibyte, label: 'B' }
 	];
-	return Object.values(byteScales.find(v => v.value > 0)).join(' ');
+	const byteScale = byteScales.find(v => v.value > 0) || byteScales.slice(-1)[0];
+	return Object.values(byteScale).join(' ');
 }
