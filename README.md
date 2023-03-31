@@ -70,6 +70,9 @@ it up and running.
   # OPTIONAL: Default is "/app/data". The path that the SQLite database will be
   # kept.
   dbPath: /app/data
+  # OPTIONAL: Default is 'info'. Set how verbose FrugalNVR is on the console.
+  # Choices are debug, info, warn, error, and fatal.
+  logLevel: info
   # The Web UI is the web-based interface to view the camera streams.
   webUI:
     # OPTIONAL: Default is "true". Enables the Web UI.
