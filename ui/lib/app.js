@@ -31,6 +31,6 @@ import Cameras from './Cameras';
 		document.body.appendChild(frugalNvr);
 	}
 	catch (err) {
-		alert(err.message);
+		console.error(err);
 	}
 })();
