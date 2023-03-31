@@ -89,10 +89,10 @@ export default class FrugalNVR extends LitElement {
 		this.#navRequest = v;
 		this.requestUpdate();
 	}
-	notifyHandler(e) {
+	notifyHandler(title, content) {
 		const dialog = new NotifyView();
-		dialog.title = document.createTextNode(e.detail.title);
-		dialog.content = document.createTextNode(e.detail.content);
+		dialog.title = document.createTextNode(title);
+		dialog.content = document.createTextNode(content);
 		dialog.opened = true;
 		const dialogHandler = () => {
 			dialog.opened = false;
@@ -125,7 +125,7 @@ export default class FrugalNVR extends LitElement {
 			<div
 				@nav=${e => this.navRequest = e.detail}
 				@request=${e => this.api.sendRequest(e.detail)}
-				@notify=${e => this.notifyHandler(e)}
+				@notify=${e => this.notifyHandler(e.detail.title, e.detail.content)}
 				class="main"
 			>
 				<div class="title">
