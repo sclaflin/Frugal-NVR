@@ -1,6 +1,9 @@
 import EventEmitter from 'events';
 import API from './API';
-import PTZPosition from './PTZPosition';
+import MotionEvents from '../../lib/MotionEvents';
+import MotionEvent from '../../lib/MotionEvent';
+import Segment from './Segment';
+import Segments from './Segments';
 
 export default class Camera extends EventEmitter {
 	#name;
@@ -10,7 +13,7 @@ export default class Camera extends EventEmitter {
 	#capabilities;
 	#thumb;
 	#segments;
-	#events;
+	#motionEvents;
 	constructor(name, videoPath, retainHours) {
 		if (typeof name !== 'string')
 			throw new TypeError('name must be a string.');
@@ -24,6 +27,9 @@ export default class Camera extends EventEmitter {
 		this.#name = name;
 		this.#videoPath = videoPath;
 		this.#retainHours = retainHours;
+		this.#segments = new Segments();
+		this.#motionEvents = new MotionEvents();
+		this.#capabilities = [];
 	}
 	get name() {
 		return this.#name;
@@ -45,37 +51,23 @@ export default class Camera extends EventEmitter {
 			throw new TypeError('api must be an API object.');
 		this.#api = v;
 	}
-	async updateThumb() {
-		this.#thumb = await this.api.getThumb(this);
-	}
 	get thumb() {
 		return this.#thumb;
 	}
-	async updateSegments() {
-		this.#segments = await this.api.getSegments(this);
+	set thumb(v) {
+		if (typeof v !== 'string')
+			throw new TypeError('thumb must be a string.');
+		this.#thumb = v;
+		this.emit('thumb');
 	}
 	get segments() {
 		return this.#segments;
 	}
-	async updateEvents() {
-		this.#events = await this.api.getMotion(this, this.segments.items?.[0]?.date);
-	}
-	get events() {
-		return this.#events;
-	}
-	async getCapabilities() {
-		this.#capabilities = await this.api.getCapabilities(this);
+	get motionEvents() {
+		return this.#motionEvents;
 	}
 	get capabilities() {
 		return this.#capabilities;
-	}
-	async setPTZPosition(position) {
-		if(!(position instanceof PTZPosition))
-			throw new TypeError('position must be a Position object.');
-		return await this.api.setPTZPosition(position, this);
-	}
-	async reboot() {
-		return await this.api.reboot(this);
 	}
 	toJSON() {
 		return {
@@ -87,10 +79,14 @@ export default class Camera extends EventEmitter {
 	static fromObject(config) {
 		if (config === null || typeof config !== 'object')
 			throw new TypeError('config must be an Object.');
-		return new this(
+		const camera = new this(
 			config.name,
 			config.videoPath,
 			config.retainHours
 		);
+		camera.segments.add(...config.segments.map(v => Segment.fromObject(v)));
+		camera.motionEvents.add(...config.motionEvents.map(v => MotionEvent.fromObject(v)));
+		camera.capabilities.push(...config.capabilities);
+		return camera;
 	}
 }

@@ -1,12 +1,12 @@
 import { LitElement, html, css } from 'lit';
 import baseStyle from './base-style';
 import Segments from './Segments';
-import Events from './Events';
+import MotionEvents from '../../lib/MotionEvents';
 
 export default class TimelineView extends LitElement {
 	#resizeObserver;
 	#segments;
-	#events;
+	#motionEvents;
 	static styles = [
 		baseStyle,
 		css`
@@ -21,7 +21,7 @@ export default class TimelineView extends LitElement {
 	constructor() {
 		super();
 		this.#resizeObserver = new ResizeObserver(entries => {
-			for(const entry of entries) {
+			for (const entry of entries) {
 				entry.target.resizedCallback(entry.contentRect);
 			}
 		});
@@ -30,18 +30,18 @@ export default class TimelineView extends LitElement {
 		return this.#segments;
 	}
 	set segments(v) {
-		if(v && !(v instanceof Segments))
+		if (v && !(v instanceof Segments))
 			throw new TypeError('segments must be a Segments object.');
 		this.#segments = v;
 		this.drawSegments();
 	}
-	get events() {
-		return this.#events;
+	get motionEvents() {
+		return this.#motionEvents;
 	}
-	set events(v) {
-		if(v && !(v instanceof Events))
-			throw new TypeError('events must be an Events object.');
-		this.#events = v;
+	set motionEvents(v) {
+		if (v && !(v instanceof MotionEvents))
+			throw new TypeError('motionEvents must be a MotionEvents object.');
+		this.#motionEvents = v;
 		this.drawSegments();
 	}
 	connectedCallback() {
@@ -49,7 +49,7 @@ export default class TimelineView extends LitElement {
 		this.#resizeObserver.observe(this);
 	}
 	disconnectedCallback() {
-		super.disconnectedCallback();		
+		super.disconnectedCallback();
 		this.#resizeObserver.unobserve(this);
 	}
 	resizedCallback({ width }) {
@@ -60,9 +60,9 @@ export default class TimelineView extends LitElement {
 	drawSegments() {
 		const canvas = this.shadowRoot?.querySelector('canvas');
 		const segments = this.segments?.items;
-		const events = this.events?.items;
+		const motionEvents = this.motionEvents?.items;
 		if (!canvas) return;
-		if(!segments?.length) return;
+		if (!segments?.length) return;
 
 		const firstSegment = segments[0];
 		const lastSegment = segments.slice(-1)[0];
@@ -77,17 +77,15 @@ export default class TimelineView extends LitElement {
 			const x2 = (segment === lastSegment) ?
 				stop * widthPerSecond :
 				((segment.date + segment.duration - start) * widthPerSecond) - x1;
-		
+
 			ctx.fillStyle = '#ffffff';
 			ctx.fillRect(x1, 0, x2, canvas.height);
 		}
-		if(!events) return;
-		for(const event of events) {
-			const x1 = (event.start - start) * widthPerSecond;
-			const x2 = (event === lastSegment) ?
-				stop * widthPerSecond :
-				((event.stop - start) * widthPerSecond) - x1;
-		
+		if (!motionEvents) return;
+		for (const motionEvent of motionEvents) {
+			const x1 = (motionEvent.start - start) * widthPerSecond;
+			const x2 = ((motionEvent.stop || stop) - start) * widthPerSecond - x1;
+
 			ctx.fillStyle = 'rgba(255, 0, 0, 0.65)';
 			ctx.fillRect(x1, 0, x2, canvas.height);
 		}

@@ -1,11 +1,10 @@
 import { html, css, LitElement } from 'lit';
 import baseStyle from './base-style';
-import API from './API';
+import WebSocketRequest from '../../lib/WebSocketRequest';
 import HostStat from './HostStat';
 import { durationString, bytesString } from './Utils';
 
 export default class StatsView extends LitElement {
-	#api;
 	#stats;
 	#statsTimeout;
 
@@ -31,19 +30,11 @@ export default class StatsView extends LitElement {
 		`
 	];
 
-	get api() {
-		return this.#api;
-	}
-	set api(v) {
-		if(!(v instanceof API))
-			throw new TypeError('api must be an API object.');
-		this.#api = v;
-	}
 	get stats() {
 		return this.#stats;
 	}
 	set stats(v) {
-		if(!(v instanceof HostStat))
+		if (!(v instanceof HostStat))
 			throw new TypeError('stats must be a HostStat object.');
 		this.#stats = v;
 		this.requestUpdate();
@@ -59,12 +50,28 @@ export default class StatsView extends LitElement {
 	}
 	async getStats() {
 		try {
-			if(!this.api)
-				return;
-			this.stats = await this.api.getStats();
+			this.stats = HostStat.fromObject(await new Promise((resolve, reject) => {
+				try {
+					this.dispatchEvent(new CustomEvent('request', {
+						bubbles: true,
+						composed: true,
+						detail: WebSocketRequest.fromObject({
+							command: 'frugal.getStats',
+							callback: response => {
+								if (response.error)
+									reject(new Error(response.error));
+								else resolve(response.data);
+							}
+						})
+					}));
+				}
+				catch (err) {
+					reject(err);
+				}
+			}));
 			this.requestUpdate();
 		}
-		catch(err) {
+		catch (err) {
 			console.error(err);
 		}
 		finally {
@@ -87,7 +94,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">CPU</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu() * 100 / this.stats.cpus.count())/100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu() * 100 / this.stats.cpus.count()) / 100 : '?'}%</div>
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem</div>
@@ -95,7 +102,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem %</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.memory() / 1024 / this.stats.mem.total * 100 * 100)/100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.memory() / 1024 / this.stats.mem.total * 100 * 100) / 100 : '?'}%</div>
 						</div>
 					</div>
 				</fieldset>
@@ -108,7 +115,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">CPU</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu('node') * 100 / this.stats.cpus.count())/100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu('node') * 100 / this.stats.cpus.count()) / 100 : '?'}%</div>
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem</div>
@@ -116,7 +123,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem %</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.memory('node') / 1024 / this.stats.mem.total * 100 * 100)/100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.memory('node') / 1024 / this.stats.mem.total * 100 * 100) / 100 : '?'}%</div>
 						</div>
 					</div>
 				</fieldset>
@@ -129,7 +136,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">CPU</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu('ffmpeg') * 100 / this.stats.cpus.count())/100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu('ffmpeg') * 100 / this.stats.cpus.count()) / 100 : '?'}%</div>
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem</div>
@@ -137,7 +144,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem %</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.memory('ffmpeg') / 1024 / this.stats.mem.total * 100 * 100)/100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.memory('ffmpeg') / 1024 / this.stats.mem.total * 100 * 100) / 100 : '?'}%</div>
 						</div>
 					</div>
 				</fieldset>

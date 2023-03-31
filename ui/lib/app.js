@@ -1,6 +1,6 @@
 import Config from './Config';
 import API from './API';
-import Camera from './Camera';
+import WebSocketRequest from '../../lib/WebSocketRequest';
 import LoadingView from './LoadingView';
 import FrugalNVR from './FrugalNVR';
 import Cameras from './Cameras';
@@ -13,20 +13,17 @@ import Cameras from './Cameras';
 		// collect required dependencies
 		const response = await fetch('./config.json', { mode: 'no-cors' });
 		const config = Config.fromObject(await response.json());
-		const api = new API(config.apiUrl, config.webSocketUrl);
-		const useOverview = await api.generateThumbs();
 		const cameras = new Cameras();
-		
-		cameras.add(...await Promise.all((await api.getCameras())
-			.map(async v => {
-				const camera = Camera.fromObject(v);
-				camera.api = api;
-				await camera.updateSegments();
-				await camera.updateEvents();
-				await camera.getCapabilities();
-				return camera;
-			})
-		));
+		const api = new API(config.apiUrl, config.webSocketUrl, cameras);
+		await api.connect();
+
+		// check to see if we're generating the Overview
+		const useOverview = await new Promise((resolve) => {
+			api.sendRequest(WebSocketRequest.fromObject({
+				command: 'frugal.generateThumbs',
+				callback: response => resolve(response.data)
+			}));
+		});
 
 		// initialize
 		loading.remove();
@@ -34,6 +31,6 @@ import Cameras from './Cameras';
 		document.body.appendChild(frugalNvr);
 	}
 	catch (err) {
-		console.error(err);
+		alert(err.message);
 	}
 })();

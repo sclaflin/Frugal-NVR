@@ -1,7 +1,7 @@
 import { LitElement, html, css } from 'lit';
 import baseStyle from './base-style';
 import Segments from './Segments';
-import Events from './Events';
+import MotionEvents from '../../lib/MotionEvents';
 import './Slider';
 import './TimelineView';
 
@@ -9,7 +9,7 @@ export default class SegmentsView extends LitElement {
 	#maxDateInterval = null;
 	#maxDate = Math.floor(Date.now() / 1000);
 	#segments;
-	#events;
+	#motionEvents;
 
 	static properties = {
 		startDate: { type: Number, attribute: 'start-date' },
@@ -88,18 +88,18 @@ export default class SegmentsView extends LitElement {
 		return this.#segments;
 	}
 	set segments(v) {
-		if(v && !(v instanceof Segments))
+		if (v && !(v instanceof Segments))
 			throw new TypeError('segments must be a Segments object.');
 		this.#segments = v;
 		this.requestUpdate();
 	}
-	get events() {
-		return this.#events;
+	get motionEvents() {
+		return this.#motionEvents;
 	}
-	set events(v) {
-		if(v && !(v instanceof Events))
-			throw new TypeError('events must be an Events object.');
-		this.#events = v;
+	set motionEvents(v) {
+		if (v && !(v instanceof MotionEvents))
+			throw new TypeError('motionEvents must be a MotionEvents object.');
+		this.#motionEvents = v;
 		this.requestUpdate();
 	}
 	connectedCallback() {
@@ -208,7 +208,7 @@ export default class SegmentsView extends LitElement {
 				></frugal-slider>
 				<frugal-timeline
 					.segments=${this.segments}
-					.events=${this.events}
+					.motionEvents=${this.motionEvents}
 				></frugal-timeline>
 			</div>
 			<div class="bottom-row">

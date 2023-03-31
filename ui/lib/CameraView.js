@@ -6,7 +6,7 @@ import Camera from './Camera';
 import API from './API';
 import { durationString, bytesString } from './Utils';
 import './SegmentsView';
-import './EventsView';
+import './MotionEventsView';
 import './CameraControlView';
 import './PTZView';
 
@@ -18,7 +18,6 @@ export default class CameraView extends LitElement {
 	#api;
 	#camera;
 	#player;
-	#updateInterval;
 	#currentDate;
 	#isLive;
 
@@ -95,7 +94,7 @@ export default class CameraView extends LitElement {
 		return this.#config;
 	}
 	set config(v) {
-		if(v && !(v instanceof Config))
+		if (v && !(v instanceof Config))
 			throw new TypeError('config must be a Config object.');
 		this.#config = v;
 	}
@@ -103,7 +102,7 @@ export default class CameraView extends LitElement {
 		return this.#api;
 	}
 	set api(v) {
-		if(v && !(v instanceof API))
+		if (v && !(v instanceof API))
 			throw new TypeError('api must be an API object.');
 		this.#api = v;
 	}
@@ -111,27 +110,26 @@ export default class CameraView extends LitElement {
 		return this.#camera;
 	}
 	set camera(v) {
-		if(v && !(v instanceof Camera))
+		if (v && !(v instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 
 		const lastCamera = this.camera;
 		this.#camera = v;
 
-		if(lastCamera !== this.camera) {
-			(async () => {
-				await this.updateCamera();
+		if (lastCamera !== this.camera) {
+			setTimeout(async () => {
 				const segments = this.shadowRoot.querySelector('frugal-segments');
 				if (segments.maxDate === segments.currentDate)
 					await this.play();
 				else await this.showClip(segments.currentDate, segments.currentDate + segments.clipDuration);
-			})();
+			}, 0);
 		}
 	}
 	get currentDate() {
 		return this.#currentDate;
 	}
 	set currentDate(v) {
-		if(!Number.isInteger(v))
+		if (!Number.isInteger(v))
 			throw new TypeError('currentDate must be an integer.');
 		this.#currentDate = v;
 
@@ -141,22 +139,11 @@ export default class CameraView extends LitElement {
 		return this.#isLive;
 	}
 	set isLive(v) {
-		if(typeof v !== 'boolean')
+		if (typeof v !== 'boolean')
 			throw new TypeError('isLive must be a boolean.');
 		this.#isLive = v;
 
 		this.requestUpdate();
-	}
-	async updateCamera() {
-		try {
-			await this.camera.updateSegments();
-			await this.camera.updateEvents();
-
-			this.requestUpdate();
-		}
-		catch (err) {
-			console.error(err);
-		}
 	}
 	async play(objectURL) {
 		if (objectURL && typeof objectURL !== 'string')
@@ -184,11 +171,11 @@ export default class CameraView extends LitElement {
 			// make sure segments view is updated with the clip start
 			const segments = this.shadowRoot.querySelector('frugal-segments');
 			segments.currentDate = start;
-			segments.clipDuration = stop - start;
+			// segments.clipDuration = stop - start;
 			const objectURL = await this.api.getClip(this.camera, start, stop);
 			this.play(objectURL);
 		}
-		catch(err) {
+		catch (err) {
 			console.error(err);
 			this.dispatchEvent(new CustomEvent('notify', {
 				bubbles: true,
@@ -228,7 +215,7 @@ export default class CameraView extends LitElement {
 	render() {
 		const retainHours = this.camera?.retainHours || 0;
 		const start = this.camera?.segments?.items[0]?.date || Math.round(Date.now() / 1000);
-		const eventCount = this.camera?.events?.items.length || 0;
+		const eventCount = this.camera?.motionEvents?.items.length || 0;
 		const segmentCount = this.camera?.segments?.items.length || 0;
 		const segmentsSize = this.camera?.segments?.bytes || 0;
 		const duration = this.camera?.segments?.duration || 0;
@@ -240,11 +227,11 @@ export default class CameraView extends LitElement {
 				<div class="events-overlay rounded dark-bg">
 					<div class="events-label">${eventCount} Motion Events</div>
 					<div class="events-wrapper scrollable">
-						<frugal-events
+						<frugal-motion-events
 							current-date=${this.currentDate}
-							.events=${this.camera?.events}
+							.motionEvents=${this.camera?.motionEvents}
 							@clip=${e => this.showClip(e.detail.start, e.detail.stop)}
-						></frugal-events>
+						></frugal-motion-events>
 					</div>
 				</div>
 			</div>
@@ -252,7 +239,7 @@ export default class CameraView extends LitElement {
 				<legend>Timeline</legend>
 				<frugal-segments
 					.segments=${this.camera?.segments}
-					.events=${this.camera?.events}
+					.motionEvents=${this.camera?.motionEvents}
 					start-date=${start}
 					segment-count=${segmentCount}
 					@currentDate=${e => this.currentDate = e.detail.currentDate}
@@ -290,17 +277,9 @@ export default class CameraView extends LitElement {
 	}
 	connectedCallback() {
 		super.connectedCallback();
-		this.#updateInterval = setInterval(async () => {
-			if(this.camera)
-				await this.updateCamera();
-		}, 5000);
 	}
 	disconnectedCallback() {
 		super.disconnectedCallback();
-		if (this.#updateInterval) {
-			clearTimeout(this.#updateInterval);
-			this.#updateInterval = null;
-		}
 		this.#player?.destroy();
 	}
 }

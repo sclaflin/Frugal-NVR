@@ -1,5 +1,6 @@
 import { html, css, LitElement } from 'lit';
 import baseStyle from './base-style';
+import WebSocketRequest from '../../lib/WebSocketRequest';
 import Camera from './Camera';
 
 
@@ -14,14 +15,49 @@ export default class CameraControlView extends LitElement {
 		return this.#camera;
 	}
 	set camera(v) {
-		if(v && !(v instanceof Camera))
+		if (v && !(v instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 		this.#camera = v;
 	}
 
 	async handleRebootClick() {
-		const message = await this.camera?.reboot();
-		console.log(message);
+		try {
+			// fire off a request to get an updated thumbnail
+			const response = await new Promise((resolve, reject) => {
+				this.dispatchEvent(new CustomEvent('request', {
+					bubbles: true,
+					composed: true,
+					detail: WebSocketRequest.fromObject({
+						command: 'camera.reboot',
+						detail: { 'name': this.camera?.name },
+						callback: response => {
+							if (response.error)
+								reject(new Error(response.error));
+							else resolve(response.data);
+						}
+					})
+				}));
+			});
+			this.dispatchEvent(new CustomEvent('notify', {
+				bubbles: true,
+				composed: true,
+				detail: {
+					title: 'Camera Reboot',
+					content: response
+				}
+			}));
+		}
+		catch (err) {
+			console.error(err);
+			this.dispatchEvent(new CustomEvent('notify', {
+				bubbles: true,
+				composed: true,
+				detail: {
+					title: 'Error',
+					content: err.message
+				}
+			}));
+		}
 	}
 
 	render() {

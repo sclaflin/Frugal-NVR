@@ -4,11 +4,12 @@ import Camera from './Camera';
 import NavRequest from './NavRequest';
 import { VIEW_CAMERA } from './Constants';
 import Cameras from './Cameras';
+import WebSocketRequest from '../../lib/WebSocketRequest';
 
 export default class Overview extends LitElement {
 	#cameras;
-	#showComposite = false;
 	#thumbsTimeout;
+
 	static styles = [
 		baseStyle,
 		css`
@@ -32,22 +33,18 @@ export default class Overview extends LitElement {
 			}
 		`
 	];
+	#thumbHandler = () => this.requestUpdate();
 	get cameras() {
 		return this.#cameras;
 	}
 	set cameras(v) {
-		if(v && !(v instanceof Cameras))
+		if (v && !(v instanceof Cameras))
 			throw new TypeError('cameras must be a Cameras object.');
+
+		const lastCameras = this.cameras;
+		lastCameras?.off('thumb', this.#thumbHandler);
 		this.#cameras = v;
-	}
-	get showComposite() {
-		return this.#showComposite;
-	}
-	set showComposite(v) {
-		if(typeof v !== 'boolean')
-			throw new TypeError('showComposite must be a boolean.');
-		this.#showComposite = v;
-		this.requestUpdate();
+		this.cameras.on('thumb', this.#thumbHandler);
 	}
 	connectedCallback() {
 		super.connectedCallback();
@@ -55,14 +52,15 @@ export default class Overview extends LitElement {
 	}
 	disconnectedCallback() {
 		super.disconnectedCallback();
+		this?.cameras.off('thumb', this.#thumbHandler);
 		clearTimeout(this.#thumbsTimeout);
 		this.#thumbsTimeout = null;
 	}
 	thumbClickHandler(camera) {
-		if(!(camera instanceof Camera))
+		if (!(camera instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
-		
-		this.dispatchEvent(new CustomEvent('nav', { 
+
+		this.dispatchEvent(new CustomEvent('nav', {
 			bubbles: true,
 			composed: true,
 			detail: new NavRequest(VIEW_CAMERA, { camera })
@@ -70,11 +68,31 @@ export default class Overview extends LitElement {
 	}
 	async getThumbs() {
 		try {
-			for(const camera of this.cameras.items)
-				await camera.updateThumb();
-			this.requestUpdate();
+			for (const camera of this.cameras.items) {
+				camera.thumb = await new Promise((resolve, reject) => {
+					try {
+						// fire off a request to get an updated thumbnail
+						this.dispatchEvent(new CustomEvent('request', {
+							bubbles: true,
+							composed: true,
+							detail: WebSocketRequest.fromObject({
+								command: 'camera.getThumb',
+								detail: { 'name': camera.name },
+								callback: response => {
+									if (response.error)
+										reject(new Error(response.error));
+									else resolve(response.data);
+								}
+							})
+						}));
+					}
+					catch (err) {
+						reject(err);
+					}
+				});
+			}
 		}
-		catch(err) {
+		catch (err) {
 			console.log(err);
 		}
 		finally {
@@ -83,21 +101,21 @@ export default class Overview extends LitElement {
 	}
 	render() {
 		let gridSize = 0;
-		while((this.cameras?.items.length || 1) / ++gridSize > gridSize);
+		while ((this.cameras?.items.length || 1) / ++gridSize > gridSize);
 		const cols = gridSize;
 		const rows = Math.ceil(this.cameras?.items.length / gridSize);
 		const images = this.cameras?.items.map((camera, index) => {
 			const col = index % gridSize + 1;
 			const row = Math.floor(index / gridSize) + 1;
-			
+
 			const classes = [];
-			if(col === 1 && row === 1) classes.push('rounded-top-left');
-			if(col === cols && row === 1) classes.push('rounded-top-right');
-			if(col === 1 && row === rows) classes.push('rounded-bottom-left');
-			if(col === cols && row === rows) classes.push('rounded-bottom-right');
+			if (col === 1 && row === 1) classes.push('rounded-top-left');
+			if (col === cols && row === 1) classes.push('rounded-top-right');
+			if (col === 1 && row === rows) classes.push('rounded-bottom-left');
+			if (col === cols && row === rows) classes.push('rounded-bottom-right');
 			return html`<img class="clickable ${classes.join(' ')}" @click=${() => this.thumbClickHandler(camera)} src=${camera.thumb}/>`;
 		});
-		
+
 		return html`
 			<div class="composite border rounded shadow dark-bg cam-grid-${gridSize}">
 				${images}	

@@ -2,6 +2,7 @@ import { html, css, LitElement } from 'lit';
 import baseStyle from './base-style';
 import Camera from './Camera';
 import PTZPosition from './PTZPosition';
+import WebSocketRequest from '../../lib/WebSocketRequest';
 import { ARROW_UP, ARROW_RIGHT, ARROW_DOWN, ARROW_LEFT } from './Constants';
 
 export default class PTZView extends LitElement {
@@ -32,7 +33,7 @@ export default class PTZView extends LitElement {
 		return this.#camera;
 	}
 	set camera(v) {
-		if(v && !(v instanceof Camera))
+		if (v && !(v instanceof Camera))
 			throw new TypeError('camera must be a Camera object.');
 		this.#camera = v;
 	}
@@ -40,23 +41,39 @@ export default class PTZView extends LitElement {
 		return this.#position;
 	}
 	async handleClick(e, code) {
-		e.preventDefault();
-		const position = PTZPosition.fromObject({
-			x: 0,
-			y: 0,
-			zoom: 0
-		});
-		switch (code) {
-			case ARROW_UP:
-				position.y = 0.5; break;
-			case ARROW_RIGHT:
-				position.x = 0.1; break;
-			case ARROW_DOWN:
-				position.y = -0.5; break;
-			case ARROW_LEFT:
-				position.x = -0.1; break;
+		try {
+			e.preventDefault();
+			const position = PTZPosition.fromObject({
+				x: 0,
+				y: 0,
+				zoom: 0
+			});
+			switch (code) {
+				case ARROW_UP:
+					position.y = 0.5; break;
+				case ARROW_RIGHT:
+					position.x = 0.1; break;
+				case ARROW_DOWN:
+					position.y = -0.5; break;
+				case ARROW_LEFT:
+					position.x = -0.1; break;
+			}
+			// fire off a request to get an updated thumbnail
+			this.dispatchEvent(new CustomEvent('request', {
+				bubbles: true,
+				composed: true,
+				detail: WebSocketRequest.fromObject({
+					command: 'camera.setPTZPosition',
+					detail: {
+						name: this.camera.name,
+						position
+					}
+				})
+			}));
 		}
-		await this.camera.setPTZPosition(position);
+		catch (err) {
+			console.error(err);
+		}
 	}
 	render() {
 		return html`

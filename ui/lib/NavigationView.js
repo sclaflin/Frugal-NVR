@@ -20,9 +20,11 @@ export default class NavigationView extends LitElement {
 		return this.#cameras;
 	}
 	set cameras(v) {
-		if(v && !(v instanceof Cameras))
+		if (v && !(v instanceof Cameras))
 			throw new TypeError('cameras must be a Cameras object.');
 		this.#cameras = v;
+
+		this.requestUpdate();
 	}
 
 	handler(e, view) {

@@ -1,23 +1,30 @@
+import Cameras from './Cameras';
 import Camera from './Camera';
-import HostStat from './HostStat';
 import Segment from './Segment';
-import Segments from './Segments';
-import Event from './Event';
-import Events from './Events';
-import PTZPosition from './PTZPosition';
+import MotionEvent from '../../lib/MotionEvent';
+import WebSocketRequest from '../../lib/WebSocketRequest';
+import WebSocketResponse from '../../lib/WebSocketResponse';
 
 export default class API {
 	#apiUrl;
 	#webSocketUrl;
+	#cameras;
+	#queuedRequests = [];
+	#pendingRequests = [];
+	#connected = false;
 	#webSocket;
-	constructor(apiUrl, webSocketUrl) {
+
+	constructor(apiUrl, webSocketUrl, cameras) {
 		if (!(apiUrl instanceof URL))
 			throw new TypeError('apiUrl must be a URL object.');
 		if (!(webSocketUrl instanceof URL))
 			throw new TypeError('webSocketUrl must be a URL object.');
+		if (!(cameras instanceof Cameras))
+			throw new TypeError('cameras must be a Cameras object.');
+
 		this.#apiUrl = apiUrl;
 		this.#webSocketUrl = webSocketUrl;
-		this.#webSocket = new WebSocket(this.webSocketUrl, 'frugal-nvr');
+		this.#cameras = cameras;
 	}
 	get apiUrl() {
 		return this.#apiUrl;
@@ -25,39 +32,112 @@ export default class API {
 	get webSocketUrl() {
 		return this.#webSocketUrl;
 	}
-	async getCameras() {
-		const response = await fetch(`${this.apiUrl}cameras`);
-		if (!response.ok)
-			throw new Error(await response.json());
-		return await response.json();
+	get cameras() {
+		return this.#cameras;
 	}
-	async getStats() {
-		const response = await fetch(`${this.apiUrl}stats`);
-		if (!response.ok)
-			throw new Error(await response.json());
-		return HostStat.fromObject(await response.json());
+	async connect() {
+		if (this.#connected)
+			throw new Error('already connected');
+
+		this.#webSocket = new WebSocket(this.webSocketUrl, 'frugal-nvr');
+		this.#webSocket.addEventListener('open', this.#handleOpen);
+		this.#webSocket.addEventListener('open', this.#handleOpen);
+		this.#webSocket.addEventListener('message', this.#handleMessage);
+		this.#webSocket.addEventListener('close', this.#handleClose);
+
+		// delay returning until connected
+		await new Promise((resolve, reject) => {
+			const timeout = setTimeout(() => reject(new Error('Connection attempt timed out.')), 5000);
+			const openHandler = () => {
+				clearTimeout(timeout);
+				this.#webSocket.removeEventListener('open', openHandler);
+				resolve();
+			};
+			this.#webSocket.addEventListener('open', openHandler);
+		});
 	}
-	async generateThumbs() {
-		const response = await fetch(`${this.apiUrl}generate-thumbs`);
-		if (!response.ok)
-			throw new Error(await response.json());
-		return await response.json();
+	get connected() {
+		return this.#connected;
 	}
-	async getSegments(camera) {
-		if (!(camera instanceof Camera))
-			throw new TypeError('camera must be a Camera object.');
-		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/segments`);
-		if (!response.ok)
-			throw new Error(await response.json());
-		const segments = new Segments();
-		segments.add(...(await response.json()).map(v => Segment.fromObject(v)));
-		return segments;
-	}
-	async getThumb(camera) {
-		if (!(camera instanceof Camera))
-			throw new TypeError('camera must be a Camera object.');
-		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/thumb`);
-		return await URL.createObjectURL(await response.blob());
+	#handleOpen = () => {
+		this.#connected = true;
+		this.#queuedRequests.slice(0).forEach(request => {
+			this.#queuedRequests.splice(this.#queuedRequests.indexOf(request), 1);
+			this.#pendingRequests.push(request);
+			this.#webSocket.send(JSON.stringify(request));
+		});
+	};
+	#handleClose = async (event) => {
+		console.log(event);
+		this.#connected = false;
+		this.#webSocket.removeEventListener('open', this.#handleOpen);
+		this.#webSocket.removeEventListener('message', this.#handleMessage);
+		this.#webSocket.removeEventListener('close', this.#handleClose);
+		this.#webSocket = null;
+		setTimeout(() => this.connect(), 3000);
+	};
+	#handleMessage = async (event) => {
+		const obj = JSON.parse(event.data);
+		if (obj.type === 'WebSocketEvent') {
+			switch (obj.name) {
+				case 'cameras.init':
+					this.cameras.clear();
+					this.cameras.add(...obj.data.map(v => Camera.fromObject(v)));
+					break;
+				case 'segment.update': {
+					const camera = this.cameras.items.find(camera => camera.name === obj.data.name);
+					const segment = camera.segments.items.find(segment => segment.segmentId === obj.data.segmentId);
+					segment.bytes = obj.data.bytes;
+					segment.duration = obj.data.duration;
+					segment.truncated = obj.data.truncated;
+					break;
+				}
+				case 'segment.add': {
+					const segment = Segment.fromObject(obj.data);
+					const camera = this.cameras.items.find(camera => camera.nameSanitized === segment.name);
+					camera.segments.add(segment);
+					break;
+				}
+				case 'motionEvent.start': {
+					const motionEvent = MotionEvent.fromObject({
+						start: obj.data.date,
+						stop: null
+					});
+					const camera = this.cameras.items.find(camera => camera.name === obj.data.name);
+					camera.motionEvents.add(motionEvent);
+					break;
+				}
+				case 'motionEvent.stop': {
+					const camera = this.cameras.items.find(camera => camera.name === obj.data.name);
+					const motionEvent = camera.motionEvents.items.slice(-1)[0];
+
+					if (motionEvent.isActive)
+						motionEvent.stop = obj.data.date;
+					break;
+				}
+				case 'thumbnail.update': {
+					const camera = this.cameras.items.find(camera => camera.name === obj.data.name);
+					camera.thumb = obj.data.thumbnail;
+					break;
+				}
+			}
+		}
+		else if (obj.type === 'WebSocketResponse') {
+			const response = WebSocketResponse.fromObject(obj);
+			const index = this.#pendingRequests.findIndex(v => v.id === response.id);
+			const request = this.#pendingRequests.splice(index, 1)[0];
+			request.callback(response);
+		}
+	};
+	async sendRequest(request) {
+		if (!(request instanceof WebSocketRequest))
+			throw new TypeError('request must be a WebSocketRequest object.');
+		if (!this.connected)
+			this.#queuedRequests.push(request);
+		else {
+			this.#pendingRequests.push(request);
+			this.#webSocket.send(JSON.stringify(request));
+		}
 	}
 	async getClip(camera, start, stop) {
 		if (!(camera instanceof Camera))
@@ -82,39 +162,6 @@ export default class API {
 		if (!response.ok)
 			throw new Error(await response.json());
 		return await URL.createObjectURL(await response.blob());
-	}
-	async getMotion(camera) {
-		if (!(camera instanceof Camera))
-			throw new TypeError('camera must be a Camera object.');
-		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/motion`);
-		if (!response.ok)
-			throw new Error(await response.json());
-		const events = new Events();
-		events.add(...(await response.json()).map(v => Event.fromObject(v)));
-		return events;
-	}
-	async getCapabilities(camera) {
-		if (!(camera instanceof Camera))
-			throw new TypeError('camera must be a Camera object.');
-		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/capabilities`);
-		if (!response.ok)
-			throw new Error(await response.json());
-		return await response.json();
-	}
-	async setPTZPosition(position, camera) {
-		if(!(position instanceof PTZPosition))
-			throw new TypeError('position must be a PTZPosition object.');
-		if (!(camera instanceof Camera))
-			throw new TypeError('camera must be a Camera object.');
-		const requestOptions = {
-			method: 'PUT',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify(position)
-		};
-		const response = await fetch(`${this.apiUrl}camera/${camera.nameSanitized}/ptz/position`, requestOptions);
-		if (!response.ok)
-			throw new Error(await response.json());
-		return await response.json();
 	}
 	async reboot(camera) {
 		if (!(camera instanceof Camera))

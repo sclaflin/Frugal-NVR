@@ -5,7 +5,7 @@ import './NavigationView';
 import './CameraView';
 import './Overview';
 import './StatsView';
-import './EventsView';
+import './MotionEventsView';
 import NavRequest from './NavRequest';
 import Dialogs from './Dialogs';
 import { NotifyView } from './DialogView';
@@ -61,6 +61,8 @@ export default class FrugalNVR extends LitElement {
 		this.#useOverview = useOverview;
 		this.#dialogs = new Dialogs();
 		this.navRequest = new NavRequest(this.useOverview ? VIEW_OVERVIEW : VIEW_STATS);
+
+		this.cameras.on('add', () => this.requestUpdate());
 	}
 	get config() {
 		return this.#config;
@@ -112,16 +114,17 @@ export default class FrugalNVR extends LitElement {
 				view = html`<frugal-camera-view class="fade-in" .config=${this.config} .api=${this.api} .camera=${this.navRequest.data.camera}></frugal-camera-view>`;
 				break;
 			case VIEW_STATS:
-				view = html`<frugal-stats class="fade-in" .api=${this.api}></frugal-stats>`;
+				view = html`<frugal-stats class="fade-in"></frugal-stats>`;
 				break;
 			case VIEW_OVERVIEW:
-				view = html`<frugal-overview class="fade-in" .api=${this.api} .cameras=${this.cameras}></frugal-overview>`;
+				view = html`<frugal-overview class="fade-in" .cameras=${this.cameras}></frugal-overview>`;
 				break;
 		}
 
 		return html`
 			<div
 				@nav=${e => this.navRequest = e.detail}
+				@request=${e => this.api.sendRequest(e.detail)}
 				@notify=${e => this.notifyHandler(e)}
 				class="main"
 			>
