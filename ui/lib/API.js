@@ -1,3 +1,4 @@
+import EventEmitter from 'events';
 import Cameras from './Cameras';
 import Camera from './Camera';
 import Segment from './Segment';
@@ -5,7 +6,7 @@ import MotionEvent from '../../lib/MotionEvent';
 import WebSocketRequest from '../../lib/WebSocketRequest';
 import WebSocketResponse from '../../lib/WebSocketResponse';
 
-export default class API {
+export default class API extends EventEmitter {
 	#apiUrl;
 	#webSocketUrl;
 	#cameras;
@@ -21,6 +22,8 @@ export default class API {
 			throw new TypeError('webSocketUrl must be a URL object.');
 		if (!(cameras instanceof Cameras))
 			throw new TypeError('cameras must be a Cameras object.');
+
+		super();
 
 		this.#apiUrl = apiUrl;
 		this.#webSocketUrl = webSocketUrl;
@@ -74,6 +77,7 @@ export default class API {
 		this.#webSocket.removeEventListener('message', this.#handleMessage);
 		this.#webSocket.removeEventListener('close', this.#handleClose);
 		this.#webSocket = null;
+		this.emit('disconnect');
 		setTimeout(() => this.connect(), 3000);
 	};
 	#handleMessage = async (event) => {

@@ -63,6 +63,7 @@ export default class FrugalNVR extends LitElement {
 		this.navRequest = new NavRequest(this.useOverview ? VIEW_OVERVIEW : VIEW_STATS);
 
 		this.cameras.on('add', () => this.requestUpdate());
+		this.api.on('disconnect', () => this.notifyHandler('Connection Lost', 'Atempting to re-connect to FrugalNVR...'));
 	}
 	get config() {
 		return this.#config;
