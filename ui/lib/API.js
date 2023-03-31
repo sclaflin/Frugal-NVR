@@ -98,7 +98,7 @@ export default class API extends EventEmitter {
 				}
 				case 'segment.add': {
 					const segment = Segment.fromObject(obj.data);
-					const camera = this.cameras.items.find(camera => camera.nameSanitized === segment.name);
+					const camera = this.cameras.items.find(camera => camera.name === segment.name);
 					camera.segments.add(segment);
 					break;
 				}
