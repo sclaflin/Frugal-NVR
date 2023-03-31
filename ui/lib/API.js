@@ -42,38 +42,38 @@ export default class API extends EventEmitter {
 		if (this.#connected)
 			throw new Error('already connected');
 
-		this.#webSocket = new WebSocket(this.webSocketUrl, 'frugal-nvr');
-		this.#webSocket.addEventListener('open', this.#handleOpen);
-		this.#webSocket.addEventListener('open', this.#handleOpen);
-		this.#webSocket.addEventListener('message', this.#handleMessage);
-		this.#webSocket.addEventListener('close', this.#handleClose);
+		// loop until connected
+		// eslint-disable-next-line no-constant-condition
+		while (true) {
+			this.#webSocket = new WebSocket(this.webSocketUrl, 'frugal-nvr');
+			// delay returning until connected
+			const connected = await new Promise((resolve) => {
+				const handler = (event) => {
+					this.#webSocket.removeEventListener('open', handler);
+					this.#webSocket.removeEventListener('close', handler);
+					resolve(event.type === 'open');
+				};
+				this.#webSocket.addEventListener('open', handler);
+				this.#webSocket.addEventListener('close', handler);
+			});
+			if (connected) break;
+			else await new Promise(resolve => setTimeout(resolve, 3000));
+		}
 
-		// delay returning until connected
-		await new Promise((resolve, reject) => {
-			const timeout = setTimeout(() => reject(new Error('Connection attempt timed out.')), 5000);
-			const openHandler = () => {
-				clearTimeout(timeout);
-				this.#webSocket.removeEventListener('open', openHandler);
-				resolve();
-			};
-			this.#webSocket.addEventListener('open', openHandler);
-		});
-	}
-	get connected() {
-		return this.#connected;
-	}
-	#handleOpen = () => {
 		this.#connected = true;
 		this.#queuedRequests.slice(0).forEach(request => {
 			this.#queuedRequests.splice(this.#queuedRequests.indexOf(request), 1);
 			this.#pendingRequests.push(request);
 			this.#webSocket.send(JSON.stringify(request));
 		});
-	};
-	#handleClose = async (event) => {
-		console.log(event);
+		this.#webSocket.addEventListener('message', this.#handleMessage);
+		this.#webSocket.addEventListener('close', this.#handleClose);
+	}
+	get connected() {
+		return this.#connected;
+	}
+	#handleClose = async () => {
 		this.#connected = false;
-		this.#webSocket.removeEventListener('open', this.#handleOpen);
 		this.#webSocket.removeEventListener('message', this.#handleMessage);
 		this.#webSocket.removeEventListener('close', this.#handleClose);
 		this.#webSocket = null;
