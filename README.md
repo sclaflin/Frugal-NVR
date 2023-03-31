@@ -63,6 +63,10 @@ it up and running.
   # OPTIONAL: Default is "24". How many hours of recorded camera streams to 
   # retain.
   retainHours: 24
+  # OPTIONAL: Default is 10. How many seconds to wait before updating statistics
+  # on a segment. Resource constrained hosts should pick a larger number as this
+  # is (relatively) CPU intensive.
+  segmentUpdateFrequency: 10
   # OPTIONAL: Default is "/app/data". The path that the SQLite database will be
   # kept.
   dbPath: /app/data
