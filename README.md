@@ -37,6 +37,7 @@ things evolve.***
 * Multiple build targets
 * Tighter integration with ONVIF (PTZ & more)
 * Hardware accelleration
+* AI inference & hardware support
 * MQTT integration
 * Home Assistant integration
 
@@ -44,15 +45,15 @@ things evolve.***
 
 ### Docker & Docker Compose
 
-Below are install instructions based on using docker & docker-compse. If your
+Below are install instructions based on using docker & docker-compose. If your
 docker environment varies, the below information is still useful for getting
-it up and running.
+it up and running. ARMv7 & AMD64 builds are available.
 
 0. Install [docker](https://docs.docker.com/engine/install/) &
   [docker-compose](https://docs.docker.com/compose/install/)
 1. Create a `FrugalNVR` folder on your docker host.
 2. Add a `video` and `data` sub-folder to the `FrugalNVR` folder.
-2. Add a `config.yml` to the `FrugalNVR` folder. Example configuration:
+3. Add a `config.yml` to the `FrugalNVR` folder. Example configuration:
   ```yml
   # REQUIRED: Set this to the hosts network name or address that Frugal NVR is
   # running on.
@@ -110,7 +111,7 @@ it up and running.
       onvif:
         hostname: camera-two.lan
   ```
-3. Add a `docker-compose.yml` to the `FrugalNVR` folder. Example configuration:
+4. Add a `docker-compose.yml` to the `FrugalNVR` folder. Example configuration:
   ```yml
   services:
   frugal-nvr:
@@ -138,4 +139,32 @@ it up and running.
       # Mount your config file to make it do the things (and stuff).
       - ./config.yml:/app/config.yml
   ```
-4. Bring up the container with `docker-compose up -d`
+5. Bring up the container with `docker-compose up -d`
+
+### Bare Metal ###
+
+FrugalNVR requires the following pre-requisites:
+
+* [node.js](https://nodejs.org/en) >= v18.15.0 LTS
+* [ffmpeg](https://ffmpeg.org/) >= 4.3.5
+* [mediainfo](https://mediaarea.net/en/MediaInfo) >= 20.09
+
+1. Clone this repository.
+2. Change directory into the `FrugalNVR` folder.
+2. Add a `config.yml` file. Use the above example configuration above.
+4. Install nodejs dependencies with `npm ci`
+5. Build the webUI with `npm run buildUI`
+6. Start it up with `node index.js`
+7. Set up a watchdog / system service to keep it running.
+
+## Development ##
+
+This application is developed within a VSCode devcontainer.
+
+1. Clone this repository.
+2. Open the project in VSCode.
+3. CTRL+SHIFT+P: Reopen in Container.
+4. Add a `config.yml` file. Use the above example configuration above.
+5. Install nodejs dependencies with `npm ci`
+6. `npm run debugUI` to start parcel and get hacking on the UI. Point your browser to http://localhost:1234
+7. `node index.js` to get it running.
