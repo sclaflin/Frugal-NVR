@@ -11,7 +11,7 @@
     "staticPath": "ui/static"
   },
   "scripts": {
-    "buildUI": "rm -rf .parce-cache && rm -rf web && npx parcel build --public-url ./ --dist-dir web ui/index.html",
+    "buildUI": "rm -rf .parcel-cache && rm -rf web && npx parcel build --public-url ./ --dist-dir web ui/index.html",
     "debugUI": "npx parcel --dist-dir web ui/index.html",
     "buildImage": "docker build -f build.Dockerfile -t sclaflin/frugal-nvr:`npm pkg get version | sed 's/\"//g'` .",
     "buildDevImage": "docker build -f build.Dockerfile -t sclaflin/frugal-nvr:`git rev-parse --short HEAD` .",
