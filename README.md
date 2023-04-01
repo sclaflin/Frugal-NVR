@@ -3,6 +3,13 @@
 Frugal NVR is a locally hosted Network Video Recorder with a focus on low
 resource usage.
 
+For example, a Libre Computer "Le Potato" (a rough equivalent to a Raspberry PI
+3) runs about 30% - 50% CPU utilization with the following:
+ - 8 1080p concurrent streams
+ - 3 2k concurrent streams
+ - disabled composite view
+ - 60 seconds delay between video segment scans on disk
+
 ![Real time statistics](/images/stats.png)
 
 ![Composite overview](/images/overview.png)
