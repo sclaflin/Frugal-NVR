@@ -36,6 +36,7 @@ COPY --chown=node:node data /app/data
 COPY --chown=node:node package.json /app/
 COPY --chown=node:node package-lock.json /app/
 COPY --chown=node:node index.js /app/
+COPY --chown=node:node images /app/images
 COPY --chown=node:node --from=0 /build/web /app/web
 
 USER node
