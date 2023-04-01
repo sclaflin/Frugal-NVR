@@ -29,7 +29,7 @@ export default class Overview extends LitElement {
 				top: 1em;
 				left: 1em;
 				color: #ffffff;
-				width: 1.5em;
+				width: 1em;
 			}
 			.composite.cam-grid-1 {
 				grid-template-columns: 1fr;
