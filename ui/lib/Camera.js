@@ -13,6 +13,7 @@ export default class Camera extends EventEmitter {
 	#capabilities;
 	#thumb;
 	#segments;
+	#activeMotion = false;
 	#motionEvents;
 	constructor(name, videoPath, retainHours) {
 		if (typeof name !== 'string')
@@ -30,6 +31,16 @@ export default class Camera extends EventEmitter {
 		this.#segments = new Segments();
 		this.#motionEvents = new MotionEvents();
 		this.#capabilities = [];
+		this.motionEvents.on('add', (...motionEvents) => {
+			if(motionEvents.find(motionEvent => motionEvent.stop === null)) {
+				this.#activeMotion = true;
+				this.emit('motionStart', this);
+			}
+		});
+		this.motionEvents.on('stop', () => {
+			this.#activeMotion = false;
+			this.emit('motionStop', this);
+		});
 	}
 	get name() {
 		return this.#name;
@@ -68,6 +79,9 @@ export default class Camera extends EventEmitter {
 	}
 	get capabilities() {
 		return this.#capabilities;
+	}
+	get activeMotion() {
+		return this.#activeMotion;
 	}
 	toJSON() {
 		return {
