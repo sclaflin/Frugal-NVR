@@ -14,7 +14,8 @@
     "buildUI": "rm -rf .parce-cache && rm -rf web && npx parcel build --public-url ./ --dist-dir web ui/index.html",
     "debugUI": "npx parcel --dist-dir web ui/index.html",
     "buildImage": "docker build -f build.Dockerfile -t sclaflin/frugal-nvr:`npm pkg get version | sed 's/\"//g'` .",
-    "buildDevImage": "docker build -f build.Dockerfile -t sclaflin/frugal-nvr:`git rev-parse --short HEAD` ."
+    "buildDevImage": "docker build -f build.Dockerfile -t sclaflin/frugal-nvr:`git rev-parse --short HEAD` .",
+    "deployImages": "docker buildx build --platform linux/arm/v7,linux/amd64 -f build.Dockerfile -t sclaflin/frugal-nvr:`npm pkg get version | sed 's/\"//g'` -t sclaflin/frugal-nvr:latest . --push"
   },
   "author": "",
   "license": "GPLv3",

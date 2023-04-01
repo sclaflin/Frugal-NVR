@@ -1,17 +1,3 @@
-# compile website
-FROM node:lts-slim
-
-COPY package-lock.json /build/
-COPY package.json /build/
-COPY .parcelrc /build/
-COPY lib /build/lib
-COPY ui /build/ui
-
-WORKDIR /build
-
-RUN npm ci
-RUN npm run buildUI
-
 # build final image
 FROM node:lts-slim
 
@@ -23,6 +9,9 @@ RUN apt update \
     && apt upgrade -y \
     && DEBIAN_FRONTEND="noninteractive" \
         apt install -y \
+        python3 \
+        python-is-python3 \
+        build-essential \
         ffmpeg \
         iputils-ping \
         procps \
@@ -31,17 +20,18 @@ RUN apt update \
 
 RUN mkdir /app && chown node:node /app
 COPY --chown=node:node lib /app/lib
+COPY --chown=node:node ui /app/ui
 COPY --chown=node:node migrations /app/migrations
 COPY --chown=node:node videos /app/videos
 COPY --chown=node:node data /app/data
 COPY --chown=node:node package.json /app/
 COPY --chown=node:node package-lock.json /app/
 COPY --chown=node:node index.js /app/
-COPY --chown=node:node --from=0 /build/web /app/web
 
 USER node
 WORKDIR /app
 
-RUN npm ci --omit=dev
+RUN npm ci
+RUN npm run buildUI
 
 CMD ["/usr/local/bin/node", "index.js"]
