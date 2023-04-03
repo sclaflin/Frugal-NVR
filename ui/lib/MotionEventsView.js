@@ -30,6 +30,7 @@ export default class MotionEventsView extends LitElement {
 		if (v && !(v instanceof MotionEvents))
 			throw new TypeError('motionEvents must be an MotionEvents object.');
 		this.#motionEvents = v;
+		this.requestUpdate();
 	}
 
 	render() {
