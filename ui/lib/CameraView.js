@@ -90,6 +90,20 @@ export default class CameraView extends LitElement {
 			}
 		`
 	];
+	#fullScrenHandler = (e) => {
+		if(e.key === 'Enter') {
+			if(!document.fullscreenElement) {
+				const composite = this.shadowRoot.querySelector('video');
+				composite.requestFullscreen().catch((err) => {
+					alert(
+						`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`
+					);
+				});
+			} else {
+				document.exitFullscreen();
+			}
+		}
+	};
 	get config() {
 		return this.#config;
 	}
@@ -277,10 +291,12 @@ export default class CameraView extends LitElement {
 	}
 	connectedCallback() {
 		super.connectedCallback();
+		document.addEventListener('keydown', this.#fullScrenHandler);
 	}
 	disconnectedCallback() {
 		super.disconnectedCallback();
 		this.#player?.destroy();
+		document.removeEventListener('keydown', this.#fullScrenHandler);
 	}
 }
 customElements.define('frugal-camera-view', CameraView);

@@ -60,6 +60,20 @@ export default class Overview extends LitElement {
 	];
 	#thumbHandler = () => this.requestUpdate();
 	#motionHandler = () => this.requestUpdate();
+	#fullScrenHandler = (e) => {
+		if(e.key === 'Enter') {
+			if(!document.fullscreenElement) {
+				const composite = this.shadowRoot.querySelector('.composite');
+				composite.requestFullscreen().catch((err) => {
+					alert(
+						`Error attempting to enable fullscreen mode: ${err.message} (${err.name})`
+					);
+				});
+			} else {
+				document.exitFullscreen();
+			}
+		}
+	};
 	get cameras() {
 		return this.#cameras;
 	}
@@ -79,12 +93,14 @@ export default class Overview extends LitElement {
 	connectedCallback() {
 		super.connectedCallback();
 		this.getThumbs();
+		document.addEventListener('keydown', this.#fullScrenHandler);
 	}
 	disconnectedCallback() {
 		super.disconnectedCallback();
 		this?.cameras.off('thumb', this.#thumbHandler);
 		clearTimeout(this.#thumbsTimeout);
 		this.#thumbsTimeout = null;
+		document.removeEventListener('keydown', this.#fullScrenHandler);
 	}
 	thumbClickHandler(camera) {
 		if (!(camera instanceof Camera))
