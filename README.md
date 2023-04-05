@@ -81,6 +81,28 @@ it up and running. ARMv7 & AMD64 builds are available.
   # OPTIONAL: Default is 'info'. Set how verbose FrugalNVR is on the console.
   # Choices are debug, info, warn, error, and fatal.
   logLevel: info
+  # MQTT based interface for camera
+  mqtt:
+    # OPTIONAL: Default is "false". Enables the MQTT client
+    enable: false
+    # REQUIRED if enabled: Url to your MQTT instance
+    url: mqtt://your-mqtt-host
+    # OPTIONAL: Default is 'frugal-nvr'. Sets the base topic that Frugal NVR
+    # will publish to.
+    baseTopic: frugal-nvr
+    # Home Assistant Auto Discovery support.
+    hassDiscovery:
+      # OPTIONAL: Default is "false". Enables support for Home Assistant auto
+      # discovery.
+      enable: true
+      # OPTIONAL: Default is 'homeassistant'. Sets the base topic of
+      # homeassistant.
+      discoveryPrefix: homeassistant
+    # OPTIONAL: Connection options can be found here
+    # https://github.com/mqttjs/MQTT.js#client
+    mqttOptions:
+      username: my-username
+      password: my-password
   # The Web UI is the web-based interface to view the camera streams.
   webUI:
     # OPTIONAL: Default is "true". Enables the Web UI.
