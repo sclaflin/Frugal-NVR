@@ -86,7 +86,7 @@ export default class StatsView extends LitElement {
 					<div class="stats">
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Cores</div>
-							<div class="value">${this.stats ? this.stats.cpus.count() : '?'}</div>
+							<div class="value">${this.stats ? this.stats.cpu.cores : '?'}</div>
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Procs</div>
@@ -94,7 +94,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">CPU</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu() * 100 / this.stats.cpus.count()) / 100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu() * 100 / this.stats.cpu.cores) / 100 : '?'}%</div>
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem</div>
@@ -102,7 +102,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem %</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.memory() / 1024 / this.stats.mem.total * 100 * 100) / 100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.memory() / this.stats.mem.total * 100 * 100) / 100 : '?'}%</div>
 						</div>
 					</div>
 				</fieldset>
@@ -115,7 +115,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">CPU</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu('node') * 100 / this.stats.cpus.count()) / 100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu('node') * 100 / this.stats.cpu.cores) / 100 : '?'}%</div>
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem</div>
@@ -123,7 +123,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem %</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.memory('node') / 1024 / this.stats.mem.total * 100 * 100) / 100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.memory('node') / this.stats.mem.total * 100 * 100) / 100 : '?'}%</div>
 						</div>
 					</div>
 				</fieldset>
@@ -136,7 +136,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">CPU</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu('ffmpeg') * 100 / this.stats.cpus.count()) / 100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.cpu('ffmpeg') * 100 / this.stats.cpu.cores) / 100 : '?'}%</div>
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem</div>
@@ -144,7 +144,7 @@ export default class StatsView extends LitElement {
 						</div>
 						<div class="badge border rounded shadow dark-bg">
 							<div class="header">Mem %</div>
-							<div class="value">${this.stats ? Math.round(this.stats.procs.memory('ffmpeg') / 1024 / this.stats.mem.total * 100 * 100) / 100 : '?'}%</div>
+							<div class="value">${this.stats ? Math.round(this.stats.procs.memory('ffmpeg') / this.stats.mem.total * 100 * 100) / 100 : '?'}%</div>
 						</div>
 					</div>
 				</fieldset>

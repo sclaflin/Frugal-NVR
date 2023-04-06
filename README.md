@@ -65,6 +65,10 @@ it up and running. ARMv7 & AMD64 builds are available.
   # REQUIRED: Set this to the hosts network name or address that Frugal NVR is
   # running on.
   hostname: my-host.lan
+  # REQUIRED: Set this to where you would like Frugal to place temporary files.
+  # On Linux based hosts, /dev/shm is a good choice as it is using computer 
+  # memory to save wear and tear on physical drives.
+  tempPath: /your/temp/path
   # OPTIONAL: Default is "ffmpeg". Set this to the ffmpeg binary on your system.
   # If ffmpeg is on your system path, the default is sufficient.
   ffmpegPath: ffmpeg

@@ -1,16 +1,16 @@
-import CPUStats from './CPUStats';
+import CPUStat from './CPUStat';
 import ProcessStats from './ProcessStats';
 import MemStat from './MemStat';
 import CamStats from './CamStats';
 
 export default class HostStat {
-	#cpus;
+	#cpu;
 	#procs;
 	#mem;
 	#cams;
-	constructor(cpus, procs, mem, cams) {
-		if (!(cpus instanceof CPUStats))
-			throw new TypeError('cpus must be a CPUStats object.');
+	constructor(cpu, procs, mem, cams) {
+		if (!(cpu instanceof CPUStat))
+			throw new TypeError('cpu must be a CPUStat object.');
 		if (!(procs instanceof ProcessStats))
 			throw new TypeError('procs must be a ProcessStats object.');
 		if (!(mem instanceof MemStat))
@@ -18,13 +18,13 @@ export default class HostStat {
 		if (!(cams instanceof CamStats))
 			throw new TypeError('cams must be a CamStats object.');
 
-		this.#cpus = cpus;
+		this.#cpu = cpu;
 		this.#procs = procs;
 		this.#mem = mem;
 		this.#cams = cams;
 	}
-	get cpus() {
-		return this.#cpus;
+	get cpu() {
+		return this.#cpu;
 	}
 	get procs() {
 		return this.#procs;
@@ -40,7 +40,7 @@ export default class HostStat {
 			throw new TypeError('config must be an Object.');
 
 		return new this(
-			CPUStats.fromArray(config.cpus),
+			CPUStat.fromObject(config.cpu),
 			ProcessStats.fromArray(config.procs),
 			MemStat.fromObject({
 				free: config.mem.free || parseInt(config.mem.MemFree),
