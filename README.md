@@ -65,6 +65,12 @@ it up and running. ARMv7 & AMD64 builds are available.
   # REQUIRED: Set this to the hosts network name or address that Frugal NVR is
   # running on.
   hostname: my-host.lan
+  # OPTIONAL: Default is "ffmpeg". Set this to the ffmpeg binary on your system.
+  # If ffmpeg is on your system path, the default is sufficient.
+  ffmpegPath: ffmpeg
+  # OPTIONAL: Default is "mediainfo". Set this to the mediainfo binary on your
+  # system. If mediainfo is on your system path, the default is sufficient.
+  mediainfoPath: mediainfo
   # OPTIONAL: Default is "/app/videos". The path that video streams will be
   # recorded to. Must be an absolute path.
   videoPath: /app/videos
