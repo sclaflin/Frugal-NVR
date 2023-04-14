@@ -51,7 +51,7 @@ export default class DialogView extends LitElement {
 	}
 
 	_handleKeydown = (e) => {
-		if(e.key === 'Escape')
+		if (e.key === 'Escape')
 			this.dispatchEvent(new CustomEvent('cancel', {
 				bubbles: true,
 				composed: true
@@ -62,12 +62,12 @@ export default class DialogView extends LitElement {
 		return this.#opened;
 	}
 	set opened(v) {
-		if(typeof v !== 'boolean')
+		if (typeof v !== 'boolean')
 			throw new TypeError('opened must be a boolean.');
-		
+
 		this.#opened = v;
 
-		if(this.opened)
+		if (this.opened)
 			addEventListener('keydown', this._handleKeydown);
 		else
 			removeEventListener('keydown', this._handleKeydown);
@@ -78,7 +78,7 @@ export default class DialogView extends LitElement {
 		return this.#title;
 	}
 	set title(v) {
-		if(!(v instanceof Node))
+		if (!(v instanceof Node))
 			throw new TypeError('title must be a Node object.');
 		this.#title = v;
 
@@ -88,7 +88,7 @@ export default class DialogView extends LitElement {
 		return this.#content;
 	}
 	set content(v) {
-		if(!(v instanceof Node))
+		if (!(v instanceof Node))
 			throw new TypeError('content must be a Node object.');
 		this.#content = v;
 	}

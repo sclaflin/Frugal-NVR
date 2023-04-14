@@ -2,13 +2,13 @@ export default class CamStat {
 	#bytes;
 	#duration;
 	#segments;
-	
+
 	constructor(bytes, duration, segments) {
-		if(!Number.isInteger(bytes))
+		if (!Number.isInteger(bytes))
 			throw new TypeError('bytes must be an integer.');
-		if(!Number.isInteger(duration))
+		if (!Number.isInteger(duration))
 			throw new TypeError('duration must be an integer.');
-		if(!Number.isInteger(segments))
+		if (!Number.isInteger(segments))
 			throw new TypeError('segments must be an integer.');
 
 		this.#bytes = bytes;
@@ -25,7 +25,7 @@ export default class CamStat {
 		return this.#segments;
 	}
 	static fromObject(obj) {
-		if(obj === null || typeof obj !== 'object')
+		if (obj === null || typeof obj !== 'object')
 			throw new TypeError('obj must be an object.');
 		return new this(
 			obj.bytes,

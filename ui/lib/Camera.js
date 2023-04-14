@@ -32,7 +32,7 @@ export default class Camera extends EventEmitter {
 		this.#motionEvents = new MotionEvents();
 		this.#capabilities = [];
 		this.motionEvents.on('add', (...motionEvents) => {
-			if(motionEvents.find(motionEvent => motionEvent.stop === null)) {
+			if (motionEvents.find(motionEvent => motionEvent.stop === null)) {
 				this.#activeMotion = true;
 				this.emit('motionStart', this);
 			}

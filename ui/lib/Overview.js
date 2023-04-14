@@ -61,8 +61,8 @@ export default class Overview extends LitElement {
 	#thumbHandler = () => this.requestUpdate();
 	#motionHandler = () => this.requestUpdate();
 	#fullScrenHandler = (e) => {
-		if(e.key === 'Enter') {
-			if(!document.fullscreenElement) {
+		if (e.key === 'Enter') {
+			if (!document.fullscreenElement) {
 				const composite = this.shadowRoot.querySelector('.composite');
 				composite.requestFullscreen().catch((err) => {
 					alert(

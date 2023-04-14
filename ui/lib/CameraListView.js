@@ -21,7 +21,7 @@ export default class CameraListView extends LitElement {
 		return this.#cameras;
 	}
 	set cameras(v) {
-		if(v && !(v instanceof Cameras))
+		if (v && !(v instanceof Cameras))
 			throw new TypeError('cameras must be a Cameras object.');
 
 		this.cameras?.off('motionStart', this.#motionHandler);
@@ -32,7 +32,7 @@ export default class CameraListView extends LitElement {
 		this.requestUpdate();
 	}
 	clickHandler(camera) {
-		this.dispatchEvent(new CustomEvent('camera', { 
+		this.dispatchEvent(new CustomEvent('camera', {
 			bubbles: true,
 			composed: true,
 			detail: { camera }
@@ -51,5 +51,5 @@ export default class CameraListView extends LitElement {
 			</fieldset>
 		`;
 	}
-}  
+}
 customElements.define('frugal-camera-list', CameraListView);

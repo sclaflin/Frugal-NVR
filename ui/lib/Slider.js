@@ -103,10 +103,10 @@ export default class Slider extends LitElement {
 	handleChange(e) {
 		// sync our value
 		this.value = Number(e.target.value);
-		
+
 		// figure out why change event doesn't cross shadow root boundary
 		e.stopPropagation();
-		this.dispatchEvent(new CustomEvent('change', { 
+		this.dispatchEvent(new CustomEvent('change', {
 			bubbles: true,
 			composed: true
 		}));

@@ -91,8 +91,8 @@ export default class CameraView extends LitElement {
 		`
 	];
 	#fullScrenHandler = (e) => {
-		if(e.key === 'Enter') {
-			if(!document.fullscreenElement) {
+		if (e.key === 'Enter') {
+			if (!document.fullscreenElement) {
 				const composite = this.shadowRoot.querySelector('video');
 				composite.requestFullscreen().catch((err) => {
 					alert(

@@ -11,7 +11,7 @@ export default class PTZPosition {
 		return this.#x;
 	}
 	set x(v) {
-		if(typeof v !== 'number')
+		if (typeof v !== 'number')
 			throw new TypeError('x must be a number.');
 		this.#x = v;
 	}
@@ -19,7 +19,7 @@ export default class PTZPosition {
 		return this.#y;
 	}
 	set y(v) {
-		if(typeof v !== 'number')
+		if (typeof v !== 'number')
 			throw new TypeError('y must be a number.');
 		this.#y = v;
 	}
@@ -27,7 +27,7 @@ export default class PTZPosition {
 		return this.#zoom;
 	}
 	set zoom(v) {
-		if(typeof v !== 'number')
+		if (typeof v !== 'number')
 			throw new TypeError('zoom must be a number.');
 		this.#zoom = v;
 	}
@@ -39,7 +39,7 @@ export default class PTZPosition {
 		};
 	}
 	static fromObject(config) {
-		if(config === null || typeof config !== 'object')
+		if (config === null || typeof config !== 'object')
 			throw new TypeError('config must be an object.');
 		return new this(
 			config.x,

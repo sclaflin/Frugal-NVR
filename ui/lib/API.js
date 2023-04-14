@@ -129,7 +129,7 @@ export default class API extends EventEmitter {
 		else if (obj.type === 'WebSocketResponse') {
 			const response = WebSocketResponse.fromObject(obj);
 			const index = this.#pendingRequests.findIndex(v => v.id === response.id);
-			if(index >= 0) {
+			if (index >= 0) {
 				const request = this.#pendingRequests.splice(index, 1)[0];
 				request.callback(response);
 			}

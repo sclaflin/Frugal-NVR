@@ -3,9 +3,9 @@ import CamStat from './CamStat';
 
 export default class CamStats extends Iterable {
 	add(...items) {
-		if(items.filter(item => !(item instanceof CamStat)) > 0)
+		if (items.filter(item => !(item instanceof CamStat)) > 0)
 			throw new TypeError('all arguments must be a CamStat object.');
-			
+
 		super.add(...items);
 	}
 	get bytes() {
@@ -27,7 +27,7 @@ export default class CamStats extends Iterable {
 		return this.items.length;
 	}
 	static fromArray(arr) {
-		if(!Array.isArray(arr))
+		if (!Array.isArray(arr))
 			throw new TypeError('arr must be an Array.');
 		const stats = new this();
 		stats.add(...arr.map(v => CamStat.fromObject(v)));

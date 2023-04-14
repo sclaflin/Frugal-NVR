@@ -8,7 +8,7 @@ export function durationString(duration) {
 		{ value: Math.floor((((duration % (24 * 60 * 60)) % (60 * 60)) % 60)), label: 'S' }
 	];
 	let index = durationParts.findIndex(v => v.value !== 0);
-	if(index === -1) index = durationParts.length - 1;
+	if (index === -1) index = durationParts.length - 1;
 	return durationParts.slice(index, index + 2).map(v => `${v.value}${v.label}`).join(' ');
 }
 export function bytesString(bytes, scale = 0) {

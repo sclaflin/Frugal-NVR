@@ -7,23 +7,23 @@ export default class ProcessStat {
 	#ppid;
 	#timestamp;
 	#name;
-	
+
 	constructor(cpu, ctime, elapsed, memory, pid, ppid, timestamp, name) {
-		if(typeof cpu !== 'number')
+		if (typeof cpu !== 'number')
 			throw new TypeError('cpu must be a number.');
-		if(!Number.isInteger(ctime))
+		if (!Number.isInteger(ctime))
 			throw new TypeError('ctime must be an integer.');
-		if(typeof elapsed !== 'number')
+		if (typeof elapsed !== 'number')
 			throw new TypeError('elapsed must be a number.');
-		if(!Number.isInteger(memory))
+		if (!Number.isInteger(memory))
 			throw new TypeError('memory must be an integer.');
-		if(!Number.isInteger(pid))
+		if (!Number.isInteger(pid))
 			throw new TypeError('pid must be an integer.');
-		if(!Number.isInteger(ppid))
+		if (!Number.isInteger(ppid))
 			throw new TypeError('ppid must be an integer.');
-		if(!Number.isInteger(timestamp))
+		if (!Number.isInteger(timestamp))
 			throw new TypeError('timestamp must be an integer.');
-		if(typeof name !== 'string')
+		if (typeof name !== 'string')
 			throw new TypeError('name must be a string.');
 
 		this.#cpu = cpu;
@@ -60,7 +60,7 @@ export default class ProcessStat {
 		return this.#name;
 	}
 	static fromObject(obj) {
-		if(obj === null || typeof obj !== 'object')
+		if (obj === null || typeof obj !== 'object')
 			throw new TypeError('obj must be an object.');
 		return new this(
 			obj.cpu,

@@ -9,7 +9,7 @@ export default class Segments extends Iterable {
 		super.add(...items);
 	}
 	get duration() {
-		if(this.items.length === 0)
+		if (this.items.length === 0)
 			return 0;
 		const now = Math.round(Date.now() / 1000);
 		const lastSegment = this.items.slice(-1)[0];
